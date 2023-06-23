@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.0"
+  },
+  "require": {
+    "leafo/scssphp": "0.0.12"
+  }
+}
+
