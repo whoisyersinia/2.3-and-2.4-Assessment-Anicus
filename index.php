@@ -6,7 +6,7 @@ include('basehead.php')
 ?>
 
 <head>
-	<title>Anicus - Main</title>
+	<title>Anicus</title>
 </head>
 
 <body>
@@ -23,36 +23,52 @@ include('basehead.php')
 						<p class="lead mb-4 text-primary text-shadow-1 fw-bold">By You</p>
 					</div>
 				</div>
-				<div class="px-4 my-5 text-left content">
-					<h1 class="fw-bold">Anicus</h1>
+				<div class="px-4 text-left content text-primary">
+					<h1 class="fw-bold main-text start_fade-left">Organise<span class="period">.</span></h1>
+					<h1 class="fw-bold main-text start_fade-left">Share<span class="period">.</span></h1>
+					<h1 class="fw-bold main-text start_fade-left">List<span class="period">.</span></h1>
+				</div>
+				<div class="px-4 my-5 content">
+					<button type="button" class="btn btn-primary btn-rounded btn-lg px-4" style="--bs-btn-padding-y: 0.75rem; --bs-btn-padding-x: 2rem; --bs-btn-font-size: 0.9rem; border-radius: 25px; border-color: #2b0806;" id="sign_up"> Start Listing Now</button>
 				</div>
 
 			</main>
 		</div>
 	</div>
 
-	<section>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed maximus sem vel facilisis imperdiet. Morbi non porttitor augue, viverra lobortis augue. Sed bibendum varius vestibulum. Sed ex magna, sodales et ex ac, vehicula tristique sem. Suspendisse vulputate pharetra sapien porta commodo. Pellentesque pharetra pellentesque ex, sit amet pulvinar urna sodales eu. Nulla interdum lectus leo, at dignissim massa mattis vehicula. Praesent at leo erat. Vivamus ut lacinia lacus, sed aliquam tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam nulla orci, ultricies et tellus a, dictum lobortis tortor. Nunc varius ultrices purus, sit amet malesuada risus rutrum eget. Proin non pretium dui. Proin felis tortor, iaculis ac condimentum in, ultricies id est. Vivamus ultrices, nulla nec vulputate ultricies, lectus urna vulputate massa, a luctus mauris nunc non libero.
+	<div class="row overflow-hidden container-fluid my-5">
+		<div class="promo_text text-primary">
+			<h3 class="fw-bold">Create your own list</h3>
+			<p>Tired of keeping track of all the Anime you've watched?</p>
+		</div>
+	</div>
 
-			Duis non sapien vitae lectus auctor scelerisque semper eget nunc. Nulla nec nulla ultrices, bibendum dolor nec, elementum arcu. Donec sollicitudin nibh eu ullamcorper commodo. Ut congue nunc vel sollicitudin tincidunt. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin consequat gravida sodales. Cras maximus posuere orci, quis molestie metus viverra vel. Vivamus turpis tortor, facilisis vitae libero non, interdum lobortis mi.
+	<div class="row align-items-md-stretch py-5 mx-auto bg-dark overflow-hidden container-fluid">
+		<div class="col-md-6">
+			<div class="h-100 p-5 text-bg-dark rounded-3">
+				<h2 class="fw-bold">placeholder text</h2>
+				<p></p>
 
-			Fusce tempus orci et lacus malesuada lobortis. Ut commodo dapibus laoreet. Nam el</p>
-	</section>
-	<section>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed maximus sem vel facilisis imperdiet. Morbi non porttitor augue, viverra lobortis augue. Sed bibendum varius vestibulum. Sed ex magna, sodales et ex ac, vehicula tristique sem. Suspendisse vulputate pharetra sapien porta commodo. Pellentesque pharetra pellentesque ex, sit amet pulvinar urna sodales eu. Nulla interdum lectus leo, at dignissim massa mattis vehicula. Praesent at leo erat. Vivamus ut lacinia lacus, sed aliquam tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam nulla orci, ultricies et tellus a, dictum lobortis tortor. Nunc varius ultrices purus, sit amet malesuada risus rutrum eget. Proin non pretium dui. Proin felis tortor, iaculis ac condimentum in, ultricies id est. Vivamus ultrices, nulla nec vulputate ultricies, lectus urna vulputate massa, a luctus mauris nunc non libero.
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="h-100 bg-light border rounded-3">
+				<img src="../images/list.png" alt="list" width="1rem" height="1rem">
+			</div>
+		</div>
+	</div>
 
-			Duis non sapien vitae lectus auctor scelerisque semper eget nunc. Nulla nec nulla ultrices, bibendum dolor nec, elementum arcu. Donec sollicitudin nibh eu ullamcorper commodo. Ut congue nunc vel sollicitudin tincidunt. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin consequat gravida sodales. Cras maximus posuere orci, quis molestie metus viverra vel. Vivamus turpis tortor, facilisis vitae libero non, interdum lobortis mi.
 
-			Fusce tempus orci et lacus malesuada lobortis. Ut commodo dapibus laoreet. Nam el</p>
-	</section>
-	<section class="m-5">
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed maximus sem vel facilisis imperdiet. Morbi non porttitor augue, viverra lobortis augue. Sed bibendum varius vestibulum. Sed ex magna, sodales et ex ac, vehicula tristique sem. Suspendisse vulputate pharetra sapien porta commodo. Pellentesque pharetra pellentesque ex, sit amet pulvinar urna sodales eu. Nulla interdum lectus leo, at dignissim massa mattis vehicula. Praesent at leo erat. Vivamus ut lacinia lacus, sed aliquam tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam nulla orci, ultricies et tellus a, dictum lobortis tortor. Nunc varius ultrices purus, sit amet malesuada risus rutrum eget. Proin non pretium dui. Proin felis tortor, iaculis ac condimentum in, ultricies id est. Vivamus ultrices, nulla nec vulputate ultricies, lectus urna vulputate massa, a luctus mauris nunc non libero.
+	<?php
+	require_once('./connectlocal.inc');
+	$q = "SELECT * FROM `user`";
 
-			Duis non sapien vitae lectus auctor scelerisque semper eget nunc. Nulla nec nulla ultrices, bibendum dolor nec, elementum arcu. Donec sollicitudin nibh eu ullamcorper commodo. Ut congue nunc vel sollicitudin tincidunt. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin consequat gravida sodales. Cras maximus posuere orci, quis molestie metus viverra vel. Vivamus turpis tortor, facilisis vitae libero non, interdum lobortis mi.
+	$r = mysqli_query($conn, $q);
 
-			Fusce tempus orci et lacus malesuada lobortis. Ut commodo dapibus laoreet. Nam el</p>
-	</section>
+	while ($row = mysqli_fetch_assoc($r)) {
+		echo "<h1>$row[username]<h1>";
+	}
+	?>
 </body>
-
 
 </html>

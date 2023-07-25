@@ -6,6 +6,6 @@
 	<link rel="stylesheet" href="./stylesheets/style.css">
 	<script src="https://kit.fontawesome.com/2c7cf14a44.js" crossorigin="anonymous"></script>
 	<link rel="icon" type="image/svg" href="./images/cat_transparent.svg">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous" defer></script>
-	<script src="script.js" defer></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crosorigin="anonymous" defer></script>
+	<script src="./script.js" defer></script>
 </head>
