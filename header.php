@@ -1,3 +1,7 @@
+<?php
+session_start()
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +12,15 @@
 </head>
 
 <body>
+	<?php
+	require_once('./includes/connectlocal.inc');
+	if ($_SESSION['logged_in'] == True) {
+		echo "<p class='text-success'>Sucessfully logged in!</p>";
+	} else {
+		echo "<p class'text-warning'>You're not logged in</p>";
+	}
+
+	?>
 	<nav class="navbar fixed-top navbar-expand-lg navbar-dark">
 
 		<div class="container-fluid ps-3">

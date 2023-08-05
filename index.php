@@ -2,7 +2,7 @@
 <html lang="en">
 
 <?php
-include('basehead.php')
+include('./includes/basehead.html')
 ?>
 
 <head>
@@ -46,8 +46,8 @@ include('basehead.php')
 	<div class="row align-items-md-stretch py-5 mx-auto bg-dark overflow-hidden container-fluid">
 		<div class="col-md-6">
 			<div class="h-100 p-5 text-bg-dark rounded-3">
-				<h2 class="fw-bold">placeholder text</h2>
-				<p></p>
+				<h2 class="fw-bold">Keep it easy with us...</h2>
+				<p>Anicus with </p>
 
 			</div>
 		</div>
@@ -60,7 +60,7 @@ include('basehead.php')
 
 
 	<?php
-	require_once('./connectlocal.inc');
+	require_once('./includes/connectlocal.inc');
 	$q = "SELECT * FROM `user`";
 
 	$r = mysqli_query($conn, $q);
@@ -69,6 +69,7 @@ include('basehead.php')
 		echo "<h1>$row[username]<h1>";
 	}
 	?>
+
 </body>
 
 </html>

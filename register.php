@@ -1,21 +1,82 @@
 <?php
-require_once('basehead.php');
-require_once("./connectlocal.inc");
+require_once('./includes/basehead.html');
+require_once("./includes/connectlocal.inc");
 
 if (isset($_POST['regi'])) {
-	if ($_POST['password'] == $_POST['conf_password']) {
+	ini_set('display_errors', '1');
+	ini_set('display_startup_errors', '1');
+	error_reporting(E_ALL);
 
-		$name = $_POST['username'];
-		$email = $_POST['email'];
-		$password = $_POST['password'];
+	$trimmed = array_map('trim', $_POST);
 
-		$q = "INSERT into `user` (`username`, `email`, `password`) VALUES ('$name', '$email', '$password')";
+	$u = $e = $p = FALSE;
 
-		$r = @mysqli_query($conn, $q);
+	$errors = array();
+
+	if (empty($_POST['password'] || $_POST['email'] || $_POST['username'])) {
+		echo "<p class='text-warning'>Fields empty</p>";
 	} else {
-		echo 'help me';
+
+		//email validation
+		if (filter_var($trimmed['email'], FILTER_VALIDATE_EMAIL)) {
+			$e = mysqli_real_escape_string($conn, $trimmed['email']);
+		} else {
+			echo "<p class='text-warning'>Please enter a valid email address!</p>";
+		}
+
+		//password validation
+		if (preg_match('/^\w{7,}$/', $trimmed['password'])) {
+			if ($_POST['password'] == $_POST['conf_password']) {
+				$p = mysqli_real_escape_string($conn, $trimmed['password']);
+			} else {
+				echo "<p class='text-warning'>Your passwords do not match!</p>";
+			}
+		} else {
+			echo "<p class='text-warning'>Your password is less than 7 character's long!</p>";
+		}
+
+		//password username
+		if (preg_match('/^\w{2,}$/', $trimmed['username'])) {
+			if (preg_match('/^\w{2,30}$/', $trimmed['username'])) {
+				$u = mysqli_real_escape_string($conn, $trimmed['username']);
+			} else {
+				echo "<p class='text-warning'>Your username exceeds the chracter limit (30)!</p>";
+			}
+		} else {
+			echo "<p class='text-warning'>Your username is less than 2 characters long!</p>";
+		}
+	}
+
+	if ($e && $p && $u) {
+		$check_email_exists = "SELECT `email` FROM `user` WHERE `email`='" . $e . "'";
+		$check_user_exists = "SELECT `username` FROM `user` WHERE `username`='" . $u . "'";
+
+		$r = mysqli_query($conn, $check_email_exists) or trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
+		$r_2 = mysqli_query($conn, $check_user_exists) or trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
+
+		if (mysqli_num_rows($r_2) == 0) {
+			if (mysqli_num_rows($r) == 0) {
+				session_start();
+				$a = md5(uniqid(rand(), true));
+
+				$query = "INSERT into `user` (`username`, `email`, `password`, `email_confirmation`) VALUES ('$u', '$e', '$p', 0)";
+
+				$result = @mysqli_query($conn, $query);
+				var_dump($result);
+
+				header('Location: index.php');
+				$_SESSION['logged_in'] == True;
+
+				exit();
+			} else {
+				echo "<p class='text-warning'>Email already taken!</p>";
+			}
+		} else {
+			echo  "<p class='text-warning'>Username already taken!</p>";
+		}
 	}
 }
+
 ?>
 
 <head>
@@ -23,17 +84,19 @@ if (isset($_POST['regi'])) {
 </head>
 <div class="container-fluid bg-dark vh-100 w-100 d-flex justify-content-center align-content-center">
 	<main class="text-center w-auto m-auto border border-light rounded-3 px-4 py-4 ">
-		<form method="POST" action="index.php">
-			<img class="p-0 mb-2" src="./images/cat_transparent.svg" width="100px" height="100px" alt="logo">
+		<form method="POST" action="./register.php">
+			<a href="./index.php">
+				<img class="p-0 mb-2" src="./images/cat_transparent.svg" width="100px" height="100px" alt="logo">
+			</a>
 			<h1 class="h3 mb-3 fw-semibold text-light">Sign Up</h1>
 
 			<div class="form-floating">
-				<input name="username" type="text" class="form-control border border-3 border-tertiary" id="floatingInput" placeholder="Username" value="">
+				<input name="username" type="text" class="form-control border border-3 border-tertiary" id="floatingInput" placeholder="Username" value="<?php echo $_POST['username'] ?>">
 				<label for="floatingInput">Username</label>
 			</div>
 
 			<div class="form-floating mt-4">
-				<input name="email" type="email" class="form-control border border-3 border-info" id="floatingInput" placeholder="name@example.com" value="">
+				<input name="email" type="email" class="form-control border border-3 border-info" id="floatingInput" placeholder="name@example.com" value="<?php echo $_POST['email'] ?>">
 				<label for="floatingInput">Email address</label>
 				<div id="emailHelp" class="form-text text-light">We'll never share your email with anyone else</div>
 			</div>
