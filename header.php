@@ -1,7 +1,3 @@
-<?php
-session_start()
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,12 +10,6 @@ session_start()
 <body>
 	<?php
 	require_once('./includes/connectlocal.inc');
-	if ($_SESSION['logged_in'] == True) {
-		echo "<p class='text-success'>Sucessfully logged in!</p>";
-	} else {
-		echo "<p class'text-warning'>You're not logged in</p>";
-	}
-
 	?>
 	<nav class="navbar fixed-top navbar-expand-lg navbar-dark">
 
@@ -44,6 +34,9 @@ session_start()
 						<a class="nav-link text-primary fw-normal" href="">Lists</a>
 					</li>
 				</ul>
+				<div class="navbar navbar-nav d-flex align-items-center justify-content-center pe-4">
+					<button type="button" class="nav-item btn btn-secondary navbar-btn btn-sm text-capitalize" style="--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #000000;" onclick="window.location.href='.php'" tabindex=0>Already have an account?</button>
+				</div>
 				<div class="navbar navbar-nav d-flex align-items-center justify-content-center pe-4">
 					<button type="button" class="nav-item btn btn-primary navbar-btn btn-sm text-capitalize" style="--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #2b0806;" onclick="window.location.href='register.php'" tabindex=0>Sign Up</button>
 				</div>

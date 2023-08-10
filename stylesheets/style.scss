@@ -2,7 +2,7 @@ $theme-colors: (
   'primary': #2b0806,
   'secondary':#ffdbbd,
 	'tertiary': #ef5454,
-  'success': #6b8f71,
+  'success': #32987d,
   'info': #ADCAEB,
   'warning': #9a031e,
   'light': #f8f6f3,
@@ -97,6 +97,10 @@ body::-webkit-scrollbar-thumb {
 
 .period{
   color: #5A0619;
+}
+
+.a-link{
+  text-decoration: underline;
 }
 
 .active.fade-bottom {

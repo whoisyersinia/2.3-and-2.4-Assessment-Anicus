@@ -7,6 +7,7 @@ if (isset($_POST['regi'])) {
 	ini_set('display_startup_errors', '1');
 	error_reporting(E_ALL);
 
+
 	$trimmed = array_map('trim', $_POST);
 
 	$u = $e = $p = FALSE;
@@ -28,6 +29,7 @@ if (isset($_POST['regi'])) {
 		if (preg_match('/^\w{7,}$/', $trimmed['password'])) {
 			if ($_POST['password'] == $_POST['conf_password']) {
 				$p = mysqli_real_escape_string($conn, $trimmed['password']);
+				$p = hash('sha256', $p);
 			} else {
 				echo "<p class='text-warning'>Your passwords do not match!</p>";
 			}
@@ -56,27 +58,30 @@ if (isset($_POST['regi'])) {
 
 		if (mysqli_num_rows($r_2) == 0) {
 			if (mysqli_num_rows($r) == 0) {
-				session_start();
+				date_default_timezone_set("Pacific/Auckland");
+				$now = time();
+				$fiveMinutes = $now + (30 * 60);
+				$date_fiveMinutes = date('Y-m-d H:i:s', $fiveMinutes);
+
 				$a = md5(uniqid(rand(), true));
 
-				$query = "INSERT into `user` (`username`, `email`, `password`, `email_confirmation`) VALUES ('$u', '$e', '$p', 0)";
+				$query = "INSERT into `user` (`username`, `email`, `password`, `token`, `activation_expiry`,`email_confirmation`) VALUES ('$u', '$e', '$p', '$a', '$date_fiveMinutes', 0)";
 
 				$result = @mysqli_query($conn, $query);
-				var_dump($result);
 
-				header('Location: index.php');
-				$_SESSION['logged_in'] == True;
-
-				exit();
-			} else {
-				echo "<p class='text-warning'>Email already taken!</p>";
+				if (mysqli_affected_rows($conn) == 1) {
+					$url = 'activation.php?e=' . urlencode($e) . '&a=' . $a . '&u=' . $u;
+					header("Location: $url");
+					mysqli_close($conn);
+				}
 			}
 		} else {
-			echo  "<p class='text-warning'>Username already taken!</p>";
+			echo "<p class='text-warning'>Email already taken!</p>";
 		}
+	} else {
+		echo  "<p class='text-warning'>Username already taken!</p>";
 	}
 }
-
 ?>
 
 <head>
@@ -91,18 +96,18 @@ if (isset($_POST['regi'])) {
 			<h1 class="h3 mb-3 fw-semibold text-light">Sign Up</h1>
 
 			<div class="form-floating">
-				<input name="username" type="text" class="form-control border border-3 border-tertiary" id="floatingInput" placeholder="Username" value="<?php echo $_POST['username'] ?>">
+				<input name="username" type="text" class="form-control border border-3 border-tertiary" id="floatingInput" placeholder="Username" value="<?php if (isset($_POST['username'])) echo $_POST['username']; ?>">
 				<label for="floatingInput">Username</label>
 			</div>
 
 			<div class="form-floating mt-4">
-				<input name="email" type="email" class="form-control border border-3 border-info" id="floatingInput" placeholder="name@example.com" value="<?php echo $_POST['email'] ?>">
+				<input name="email" type="email" class="form-control border border-3 border-info" id="floatingInput" placeholder="name@example.com" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>">
 				<label for="floatingInput">Email address</label>
 				<div id="emailHelp" class="form-text text-light">We'll never share your email with anyone else</div>
 			</div>
 
 			<div class="form-floating mt-2">
-				<input name="password" type="password" class="form-control border border-3 border-info" id="floatingPassword" placeholder="Password" value="">
+				<input name="password" type="password" class="form-control border border-3 border-info" id="floatingPassword" placeholder="Password">
 				<label for="floatingPassword">Password</label>
 				<div id="passwordHelp" class="form-text text-light">Your password must be at least 7 characters long</div>
 			</div>

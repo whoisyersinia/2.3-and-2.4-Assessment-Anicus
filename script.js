@@ -1,3 +1,26 @@
+function startTimer(duration, display) {
+  var timer = duration,
+    minutes,
+    seconds;
+  setInterval(function () {
+    seconds = parseInt(timer % 60, 10);
+
+    seconds = seconds < 10 ? +seconds : seconds;
+
+    display.textContent = seconds;
+
+    if (--timer < 0) {
+      timer = duration;
+    }
+  }, 1000);
+}
+
+window.onload = function () {
+  var oneMinute = 59,
+    display = document.querySelector("#time");
+  startTimer(oneMinute, display);
+};
+
 const nav = document.querySelector("nav");
 const nav_button = document.getElementById("nav_button");
 

@@ -48,7 +48,6 @@ include('./includes/basehead.html')
 			<div class="h-100 p-5 text-bg-dark rounded-3">
 				<h2 class="fw-bold">Keep it easy with us...</h2>
 				<p>Anicus with </p>
-
 			</div>
 		</div>
 		<div class="col-md-6">
