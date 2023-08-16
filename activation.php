@@ -33,7 +33,12 @@ if (
 	}
 
 	if ($t != $a) {
-		$q = "UPDATE `user` SET `token` = '$a' WHERE (`email` ='" . mysqli_real_escape_string($conn, $_GET['e']) . "') LIMIT 1";
+		date_default_timezone_set("Pacific/Auckland");
+		$now = time();
+		$thirtyMinutes = $now + (30 * 60);
+		$date_thirtyMinutes = date('Y-m-d H:i:s', $thirtyMinutes);
+
+		$q = "UPDATE `user` SET `token` = '$a', `activation_expiry` = '$date_thirtyMinutes' WHERE (`email` ='" . mysqli_real_escape_string($conn, $_GET['e']) . "') LIMIT 1";
 
 		$r = mysqli_query($conn, $q) or trigger_error("Query: $q\b<br/>MySQL Error: " . mysqli_error($conn));
 	}
@@ -48,7 +53,7 @@ if (
 	$mail->isSMTP();
 
 	$mail->Host = 'smtp.gmail.com';
-	$mail->SMTPDebug = 1;
+	$mail->SMTPDebug = 0;
 	$mail->SMTPAuth = true;
 	$mail->SMTPSecure = "tls";
 	$mail->Port = 587;
@@ -62,23 +67,25 @@ if (
 
 	$mail->isHTML(true);
 
-	$link .= BASE_URL . 'anicus/verify.php?x=' . urldecode($e) . '&y=' . $a;
+	$link = BASE_URL . 'anicus/verify.php?x=' . urldecode($e) . '&y=' . $a;
 
 	$mailContent =
 		"	<img src='http://localhost/anicus/images/logo.svg' alt='logo'>
 			<h1>Activate your account</h1>
 			<p>$u, Welcome to Anicus! To activate your account, click on this link:\n\n</p>
 			<p>This link will expire in 30 minutes.<p>
-			<p> $link </p>";
+			<p> $link </p>
+			<p> If the link doesn't work, try copy and pasting the url to the search bar.
+			";
 	$mail->Body = $mailContent;
 
 	if ($mail->send()) {
-		echo 'Message has been sent';
+		$url = 'success.php?a=' . $a;
+		header("Location: $url");
 	} else {
 		echo 'Message could not be sent.';
 		echo 'Mailer Error: ' . $mail->ErrorInfo;
 	}
-	header('Location: index.php');
 } else {
 	ob_end_clean();
 	header("Location: index.php");

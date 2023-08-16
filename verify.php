@@ -31,9 +31,14 @@ if (
 		exit();
 	}
 
+
 	$a = md5(uniqid(rand(), true));
 	$url = 'activation.php?e=' . urlencode($e) . '&a=' . $a . '&u=' . $u;
 
+	if ($t != $_GET['y']) {
+		$b = "<h5 class='text-warning'>Your token is invalid, <a class='a-link text-warning' href='$url'>click here</a> to resend the activation link!</h5>";
+		header("refresh:59;url=index.php");
+	}
 
 	if ($date_now > $exp_date) {
 		$b = "<h5 class='text-warning'>Your token has expired, <a class='a-link text-warning' href='$url'>click here</a> to resend the activation link!</h5>";
@@ -69,7 +74,7 @@ if (
 <body>
 	<div class="container-fluid bg-dark vh-100 w-100 d-flex justify-content-center align-content-center">
 		<main class="text-center w-auto m-auto">
-			<a href="/">
+			<a href="index.php">
 				<img src="./images/logo name.svg" alt="logo" class="p-4">
 			</a>
 			<?php
@@ -80,5 +85,8 @@ if (
 	</div>
 
 </body>
+<?php
+include('footer.php');
+?>
 
 </html>

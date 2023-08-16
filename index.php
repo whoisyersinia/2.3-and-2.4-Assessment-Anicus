@@ -2,7 +2,12 @@
 <html lang="en">
 
 <?php
-include('./includes/basehead.html')
+include('./includes/basehead.html');
+session_start();
+
+if (isset($_SESSION['login'])) {
+	echo "<p>Welcome, " . $_SESSION['login']['username'] . ". </p>";
+}
 ?>
 
 <head>
@@ -23,6 +28,7 @@ include('./includes/basehead.html')
 						<p class="lead mb-4 text-primary text-shadow-1 fw-bold">By You</p>
 					</div>
 				</div>
+
 				<div class="px-4 text-left content text-primary">
 					<h1 class="fw-bold main-text start_fade-left">Organise<span class="period">.</span></h1>
 					<h1 class="fw-bold main-text start_fade-left">Share<span class="period">.</span></h1>
@@ -57,18 +63,10 @@ include('./includes/basehead.html')
 		</div>
 	</div>
 
-
-	<?php
-	require_once('./includes/connectlocal.inc');
-	$q = "SELECT * FROM `user`";
-
-	$r = mysqli_query($conn, $q);
-
-	while ($row = mysqli_fetch_assoc($r)) {
-		echo "<h1>$row[username]<h1>";
-	}
-	?>
-
 </body>
+
+<?php
+include('footer.php');
+?>
 
 </html>

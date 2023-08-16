@@ -37,9 +37,9 @@ if (isset($_POST['regi'])) {
 			echo "<p class='text-warning'>Your password is less than 7 character's long!</p>";
 		}
 
-		//password username
+		// username validation
 		if (preg_match('/^\w{2,}$/', $trimmed['username'])) {
-			if (preg_match('/^\w{2,30}$/', $trimmed['username'])) {
+			if (preg_match('/^\w{2,16}$/', $trimmed['username'])) {
 				$u = mysqli_real_escape_string($conn, $trimmed['username']);
 			} else {
 				echo "<p class='text-warning'>Your username exceeds the chracter limit (30)!</p>";
@@ -49,7 +49,10 @@ if (isset($_POST['regi'])) {
 		}
 	}
 
+	// if ok
 	if ($e && $p && $u) {
+
+		//check if user/email already exists
 		$check_email_exists = "SELECT `email` FROM `user` WHERE `email`='" . $e . "'";
 		$check_user_exists = "SELECT `username` FROM `user` WHERE `username`='" . $u . "'";
 
@@ -58,17 +61,23 @@ if (isset($_POST['regi'])) {
 
 		if (mysqli_num_rows($r_2) == 0) {
 			if (mysqli_num_rows($r) == 0) {
+
+				// set expiry 30 minutes after date now
 				date_default_timezone_set("Pacific/Auckland");
 				$now = time();
-				$fiveMinutes = $now + (30 * 60);
-				$date_fiveMinutes = date('Y-m-d H:i:s', $fiveMinutes);
+				$thirtyMinutes = $now + (30 * 60);
+				$date_thirtyminutes = date('Y-m-d H:i:s', $thirtyMinutes);
 
 				$a = md5(uniqid(rand(), true));
 
-				$query = "INSERT into `user` (`username`, `email`, `password`, `token`, `activation_expiry`,`email_confirmation`) VALUES ('$u', '$e', '$p', '$a', '$date_fiveMinutes', 0)";
+				//create user
 
-				$result = @mysqli_query($conn, $query);
+				$query = "INSERT into `user` (`username`, `email`, `password`, `token`, `activation_expiry`,`email_confirmation`) VALUES ('$u', '$e', '$p', '$a', '$date_thirtyminutes', 0)";
 
+				$result = mysqli_query($conn, $query);
+
+
+				// create activation link which sends email
 				if (mysqli_affected_rows($conn) == 1) {
 					$url = 'activation.php?e=' . urlencode($e) . '&a=' . $a . '&u=' . $u;
 					header("Location: $url");
@@ -118,7 +127,7 @@ if (isset($_POST['regi'])) {
 			</div>
 			<br>
 			<button class="w-100 btn btn-lg btn-primary" type="submit" name="regi">Create Account</button>
-			<p class="mt-5 mb-3 text-muted text-center text-light">&copy; 2023</p>
+			<p class="mt-5 mb-3 text-muted text-center text-light">&copy; Anicus 2023</p>
 		</form>
 	</main>
 </div>

@@ -1,3 +1,5 @@
+//scss set default
+
 $theme-colors: (
   'primary': #2b0806,
   'secondary':#ffdbbd,
@@ -102,6 +104,8 @@ body::-webkit-scrollbar-thumb {
 .a-link{
   text-decoration: underline;
 }
+
+//ANIMATIONS
 
 .active.fade-bottom {
   animation: fade-bottom 1s ease;

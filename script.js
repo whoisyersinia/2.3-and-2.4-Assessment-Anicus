@@ -1,6 +1,37 @@
+let btn_login = document.getElementById("btn_login");
+
+if (btn_login != null) {
+  btn_login = document.getElementById("btn_login");
+  btn_login.addEventListener("click", function () {
+    document.location.href = "login.php";
+  });
+} else {
+  btn_login = null;
+}
+let btn_register = document.getElementById("btn_register");
+
+if (btn_register != null) {
+  btn_register = document.getElementById("btn_register");
+  btn_register.addEventListener("click", function () {
+    document.location.href = "register.php";
+  });
+} else {
+  btn_register = null;
+}
+
+let btn_logout = document.getElementById("btn_logout");
+
+if (btn_logout != null) {
+  btn_logout = document.getElementById("btn_logout");
+  btn_logout.addEventListener("click", function () {
+    document.location.href = "logout.php";
+  });
+} else {
+  btn_logout = null;
+}
+
 function startTimer(duration, display) {
   var timer = duration,
-    minutes,
     seconds;
   setInterval(function () {
     seconds = parseInt(timer % 60, 10);
@@ -14,7 +45,6 @@ function startTimer(duration, display) {
     }
   }, 1000);
 }
-
 window.onload = function () {
   var oneMinute = 59,
     display = document.querySelector("#time");
