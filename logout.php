@@ -1,14 +1,15 @@
 <?php
 require_once('./includes/connectlocal.inc');
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
 session_start();
+
+// if the user is logged in 
 if (!isset($_SESSION['login'])) {
+	//exit and redirect back to home page
 	ob_end_clean();
 	header("Location: index.php");
 	exit();
 } else {
+	// else destroy session, session  array, and redirect
 	$_SESSION = array();
 	session_destroy();
 	ob_end_clean();

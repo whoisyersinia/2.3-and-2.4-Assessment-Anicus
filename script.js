@@ -1,3 +1,6 @@
+setTimeout(function () {
+  bootstrap.Alert.getOrCreateInstance(document.querySelector(".alert")).close();
+}, 3000);
 let btn_login = document.getElementById("btn_login");
 
 if (btn_login != null) {

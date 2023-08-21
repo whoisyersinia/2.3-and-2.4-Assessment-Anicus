@@ -5,7 +5,7 @@
 	session_start();
 
 	?>
-	<nav class="navbar fixed-top navbar-expand-lg navbar-dark">
+	<nav class="navbar fixed-top navbar-expand-lg navbar-dark z-1">
 
 		<div class="container-fluid ps-3">
 
@@ -37,11 +37,11 @@
 				} else {
 					echo "<div class='navbar navbar-nav d-flex align-items-center justify-content-center pe-4'>
 					<button type='button' class='nav-item btn btn-secondary navbar-btn btn-sm text-capitalize' id='btn_login' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #2b0806;'>Already have an account?</button>
-				</div>";
+					</div>";
 
 					echo "<div class='navbar navbar-nav d-flex align-items-center justify-content-center pe-4'>
-							<button type='button' class='nav-item btn btn-primary navbar-btn btn-sm text-capitalize' id='btn_register' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #2b0806;'>Sign Up</button>
-						</div>";
+					<button type='button' class='nav-item btn btn-primary navbar-btn btn-sm text-capitalize' id='btn_register' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #2b0806;'>Sign Up</button>
+					</div>";
 				}
 				?>
 			</div>

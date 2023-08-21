@@ -2,7 +2,7 @@
 require_once('./includes/basehead.html');
 require_once('header.php');
 
-if (isset($_GET['a'])  && (strlen($_GET['a']) == 32)) {
+if (isset($_GET['a']) && (strlen($_GET['a']) == 32)) {
 
 	$a = $_GET['a'];
 	$q = "SELECT * FROM `user` WHERE (`token` = '$a')";
@@ -39,10 +39,12 @@ if (isset($_GET['a'])  && (strlen($_GET['a']) == 32)) {
 				<img src="./images/cat_transparent.svg" alt="logo" class="p-4" width="200px" height="200px">
 			</a>
 			<h2 class='text-primary fw-bold'>Activation email has been sent.</h2>
-			<p class='text-primary'>Not in your inbox? Resend by <a class="a-link text-primary" href="<?php if (isset($url)) echo $url; ?>">cliking this link.</a></p>
+			<p class='text-primary'>Not in your inbox? <strong>Check your spam</strong> or resend by <a class="a-link text-primary" href="<?php if (isset($url)) echo $url; ?>">cliking this link.</a></p>
 		</main>
 	</div>
 
 </body>
 
 </html>
+<?php
+include('footer.php');

@@ -4,10 +4,6 @@
 <?php
 include('./includes/basehead.html');
 session_start();
-
-if (isset($_SESSION['login'])) {
-	echo "<p>Welcome, " . $_SESSION['login']['username'] . ". </p>";
-}
 ?>
 
 <head>
@@ -16,9 +12,34 @@ if (isset($_SESSION['login'])) {
 
 <body>
 	<?php
-	include('header.php')
+	include('header.php');
+	global $_executed;
+	$_executed = False;
+	var_dump($_executed);
+	if (!$_executed) {
+		echo 'je';
+		$_executed = True;
+		global $_executed;
+		var_dump($_executed);
+	} else {
+		echo 'jeee';
+	}
+	// if (!$_executed) {
+	// 	echo "<div class='alert alert-success alert-dismissable d-flex align-items-center fade show fixed-top z-2' role='alert'>";
+	// 	echo "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' class='me-2'
+	// 	id='check-circle-fill' fill='currentColor' viewBox='0 0 16 16'>
+	// 	<path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z'/>
+	// 	</svg>";
+
+	// 	echo "Welcome, " . $_SESSION['login']['username'] . ".";
+
+	// 	echo "<button type='button' class='btn-close position-absolute top-25 end-0 me-3' data-bs-dismiss='alert' aria-label='Close'></button>     
+	// 	</div>";
+	// 	$_executed = TRUE;
+	// }
+
 	?>
-	<div class="img-fluid banner-image w-100 vh-100 d-flex justify-content-center align-items-center">
+	<div class="img-fluid banner-image w-100 vh-100 d-flex justify-content-center align-items-center z-0">
 		<div class="container-fluid">
 			<main class="bg-text">
 				<div class="px-4 text-left content">
