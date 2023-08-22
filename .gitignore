@@ -1,4 +1,4 @@
 /node_modules
 *.css.map
 /vendor
-./stylesheets/style.css
+/stylesheets/style.css
