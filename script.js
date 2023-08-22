@@ -1,6 +1,7 @@
 setTimeout(function () {
   bootstrap.Alert.getOrCreateInstance(document.querySelector(".alert")).close();
 }, 3000);
+
 let btn_login = document.getElementById("btn_login");
 
 if (btn_login != null) {
@@ -33,25 +34,30 @@ if (btn_logout != null) {
   btn_logout = null;
 }
 
-function startTimer(duration, display) {
-  var timer = duration,
-    seconds;
-  setInterval(function () {
-    seconds = parseInt(timer % 60, 10);
-
-    seconds = seconds < 10 ? +seconds : seconds;
-
-    display.textContent = seconds;
-
-    if (--timer < 0) {
-      timer = duration;
-    }
-  }, 1000);
-}
 window.onload = function () {
   var oneMinute = 59,
     display = document.querySelector("#time");
-  startTimer(oneMinute, display);
+
+  if (display != null) {
+    function startTimer(duration, display) {
+      var timer = duration,
+        seconds;
+      setInterval(function () {
+        seconds = parseInt(timer % 60, 10);
+
+        seconds = seconds < 10 ? +seconds : seconds;
+
+        display.textContent = seconds;
+
+        if (--timer < 0) {
+          timer = duration;
+        }
+      }, 1000);
+    }
+    startTimer(oneMinute, display);
+  } else {
+    display = null;
+  }
 };
 
 const nav = document.querySelector("nav");
@@ -91,7 +97,7 @@ function reveal() {
   for (var i = 0; i < reveals.length; i++) {
     var windowHeight = window.innerHeight;
     var elementTop = reveals[i].getBoundingClientRect().top;
-    var elementVisible = 20;
+    var elementVisible = 30;
 
     if (elementTop < windowHeight - elementVisible) {
       reveals[i].classList.add("active");
@@ -107,7 +113,7 @@ function reveal_once() {
   for (var i = 0; i < reveals.length; i++) {
     var windowHeight = window.innerHeight;
     var elementTop = reveals[i].getBoundingClientRect().top;
-    var elementVisible = 20;
+    var elementVisible = 100;
 
     if (elementTop < windowHeight - elementVisible) {
       reveals[i].classList.add("active");

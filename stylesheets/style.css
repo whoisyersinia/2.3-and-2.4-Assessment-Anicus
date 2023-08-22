@@ -12243,7 +12243,7 @@ body::-webkit-scrollbar-thumb {
   white-space: nowrap;
 }
 
-.text_3 {
+.text_effect {
   background-image: linear-gradient(90deg, #c9ddff, #ecb0e1);
   background-size: 0% 5px;
   background-repeat: no-repeat;
@@ -12252,7 +12252,7 @@ body::-webkit-scrollbar-thumb {
   text-decoration: none;
 }
 
-.text_3:hover {
+.text_effect:hover {
   background-size: 100% 5px;
 }
 
@@ -12274,6 +12274,67 @@ body::-webkit-scrollbar-thumb {
 
 .a-link {
   text-decoration: underline;
+}
+
+.text_3 {
+  background-image: linear-gradient(90deg, #c9ddff, #ecb0e1);
+  background-size: 0% 5px;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  transition: background-size 300ms ease;
+  text-decoration: none;
+}
+
+.text_3:hover {
+  background-size: 100% 5px;
+}
+
+.caption {
+  font-weight: 300;
+  font-size: small;
+}
+
+.card_img {
+  background-image: url("../images/animeintro.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.card_img_2 {
+  background-image: url("../images/card.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.reveal {
+  position: relative;
+  opacity: 0;
+}
+
+.reveal_once {
+  position: relative;
+  opacity: 0;
+}
+
+.reveal_once.active {
+  opacity: 1;
+}
+
+.reveal.active {
+  opacity: 1;
+}
+
+.hover-zoom {
+  transition: all 0.3s ease;
+  opacity: 0.95;
+}
+
+.hover-zoom:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 10px -10px rgba(31, 31, 31, 0.5);
+  opacity: 1;
 }
 
 .active.fade-bottom {

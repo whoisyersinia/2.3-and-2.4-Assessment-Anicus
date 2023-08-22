@@ -9,9 +9,11 @@ if (!isset($_SESSION['login'])) {
 	header("Location: index.php");
 	exit();
 } else {
-	// else destroy session, session  array, and redirect
+	// else destroy session, session array, and redirect
 	$_SESSION = array();
 	session_destroy();
 	ob_end_clean();
-	header("Location: index.php");
+
+	//to print logout message on redirect
+	header("Location: index.php?s=loggedout");
 }
