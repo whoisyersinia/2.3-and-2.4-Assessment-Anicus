@@ -3,11 +3,6 @@ require_once('./includes/basehead.html');
 require_once("./includes/connectlocal.inc");
 
 if (isset($_POST['regi'])) {
-	ini_set('display_errors', '1');
-	ini_set('display_startup_errors', '1');
-	error_reporting(E_ALL);
-
-
 	$trimmed = array_map('trim', $_POST);
 
 	$u = $e = $p = FALSE;

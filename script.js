@@ -1,3 +1,11 @@
+$(document).ready(function () {
+  $(".chosen-select").chosen({
+    no_results_text: "Oops, nothing found!",
+  });
+});
+
+$(".chosen-select").chosen({ max_selected_options: 5 });
+
 setTimeout(function () {
   bootstrap.Alert.getOrCreateInstance(document.querySelector(".alert")).close();
 }, 3000);
@@ -60,36 +68,46 @@ window.onload = function () {
   }
 };
 
-const nav = document.querySelector("nav");
-const nav_button = document.getElementById("nav_button");
+let nav = document.querySelector("nav");
+let nav_button = document.getElementById("nav_button");
 
-nav_button.onclick = function (e) {
-  if (e.target.id !== "nav_button") {
-    nav.classList.add("bg-dark", "shadow");
-  } else {
-    nav.classList.remove("bg-dark", "shadow");
-  }
-};
+if (nav_button != null) {
+  nav_button.onclick = function (e) {
+    if (e.target.id !== "nav_button") {
+      nav.classList.add("bg-dark", "shadow");
+    } else {
+      nav.classList.remove("bg-dark", "shadow");
+    }
+  };
+} else {
+  nav_button = null;
+}
 
-window.addEventListener("scroll", function () {
-  if (window.scrollY > 100) {
-    nav.classList.add("bg-dark", "shadow");
-  } else {
-    nav.classList.remove("bg-dark", "shadow");
-  }
-});
+if (nav != null) {
+  window.addEventListener("scroll", function () {
+    if (window.scrollY > 100) {
+      nav.classList.add("bg-dark", "shadow");
+    } else {
+      nav.classList.remove("bg-dark", "shadow");
+    }
+  });
+} else {
+  nav = null;
+}
 
-const sign_up_button = document.getElementById("sign_up");
+let sign_up_button = document.getElementById("sign_up");
 
-sign_up_button.addEventListener("mouseover", function () {
-  sign_up_button.classList.add("btn-transparent");
-  sign_up_button.classList.remove("btn-primary");
-});
+if (sign_up_button != null) {
+  sign_up_button.addEventListener("mouseover", function () {
+    sign_up_button.classList.add("btn-transparent");
+    sign_up_button.classList.remove("btn-primary");
+  });
 
-sign_up_button.addEventListener("mouseout", function () {
-  sign_up_button.classList.add("btn-primary");
-  sign_up_button.classList.remove("btn-transparent");
-});
+  sign_up_button.addEventListener("mouseout", function () {
+    sign_up_button.classList.add("btn-primary");
+    sign_up_button.classList.remove("btn-transparent");
+  });
+}
 
 function reveal() {
   var reveals = document.querySelectorAll(".reveal");

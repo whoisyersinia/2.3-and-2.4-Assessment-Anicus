@@ -40,7 +40,7 @@
 					</div>";
 
 					echo "<div class='navbar navbar-nav d-flex align-items-center justify-content-center pe-4'>
-					<button type='button' class='nav-item btn btn-primary navbar-btn btn-sm text-capitalize' id='btn_register' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.3rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; ;'>Sign Up</button>
+					<button type='button' class='nav-item btn btn-primary navbar-btn btn-sm text-capitalize' id='sign_up' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.3rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; ;'>Sign Up</button>
 					</div>";
 				}
 				?>

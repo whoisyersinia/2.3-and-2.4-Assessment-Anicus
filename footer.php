@@ -1,11 +1,8 @@
 <?php
 include('./includes/basehead.html'); ?>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
-<script type="text/javascript" src="script.js"></script>
-
-<div class="container-fluid bg-dark">
+<div class="container-fluid  position-relative bg-dark">
 	<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top footer">
 		<p class="col-md-4 mb-0 text-light">&copy; 2023 Anicus</p>
 
@@ -20,3 +17,6 @@ include('./includes/basehead.html'); ?>
 		</ul>
 	</footer>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="script.js"></script>

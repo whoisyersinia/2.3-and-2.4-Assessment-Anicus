@@ -55,7 +55,7 @@ if (isset($_POST['login'])) {
 		$q = "SELECT * FROM `user` WHERE (`email` = '$e ' OR `username` = '$e')";
 		$r = mysqli_query($conn, $q) or  trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
 		if (mysqli_num_rows($r) == 1) {
-			array_push($errors, "You haven't made an account, please register...");
+			array_push($errors, "You haven't made an account, please register.");
 		}
 	} else {
 		array_push($errors, "I probably did something bad. Something went wrong. Please contact the site adminstrator!");

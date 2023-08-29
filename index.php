@@ -57,6 +57,8 @@ session_start();
 
 
 	?>
+
+	<!--START OF HTML - HOMEPAGE -->
 	<div class="img-fluid banner-image w-100 vh-100 d-flex justify-content-center align-items-center z-0 ">
 		<div class="container-fluid">
 			<main class="bg-text">
@@ -100,7 +102,7 @@ session_start();
 			</div>
 			<div class="col-md-5 text-end m-0 fade-right reveal_once">
 				<h2 class="fw-bold ">Welcome to the <span class="text-white text_effect">World of Anime.</span></h2>
-				<p>Anime is a type of animation originating from Japan. It has a wide range of genre for all type of viewers, including,but not limted to, <span class="fw-bold">action, drama, romance, comedy, horror, fantasy, sports, sci-fi, 'slice of life'</span> etc.</p>
+				<p>Anime is a type of animation originating from Japan. It has a wide range of genres for all type of viewers, including, but not limted to: <span class="fw-bold">action, drama, romance, comedy, horror, fantasy, sports, sci-fi, 'slice of life'</span> etc.</p>
 				<hr>
 				</hr>
 				<h4>Don't know where to start?</h4>
@@ -111,6 +113,11 @@ session_start();
 						<h5 class="text-muted">Check our 'Anime for Beginners Lists'</h5>
 					</a>
 				</div>
+				<!--SEARCH FORM-->
+				<form class="d-inline-flex pt-2" action="search.php" method="GET">
+					<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm">
+					<button class="btn btn-outline-primary" type="submit" name="search">Search</button>
+				</form>
 			</div>
 		</div>
 

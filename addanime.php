@@ -1,0 +1,189 @@
+<?php
+require_once("./includes/connectlocal.inc");
+require_once('./includes/basehead.html');
+
+if (isset($_POST['submit'])) {
+	ini_set('display_errors', '1');
+	ini_set('display_startup_errors', '1');
+	error_reporting(E_ALL);
+
+	$errors = array();
+
+	// convert array to string
+
+
+
+	$t = $g = $ep = FALSE;
+
+	if (empty($_POST['title'] || $_POST['genre'] = array() || $_POST['ep'])) {
+		array_push($errors, "Required fields empty!");
+	} else {
+		$title = trim($_POST['title']);
+		$synopsis = trim($_POST['synopsis']);
+
+		if (preg_match('/^\w{2,}$/', $title)) {
+			if (preg_match('/^\w{2,255}$/', $title)) {
+				$t = mysqli_real_escape_string($conn, $title);
+			} else {
+				array_push($errors, "Your title exceeds the chracter limit (255)!");
+			}
+		} else {
+			array_push($errors, "Your title is less than 2 characters long!");
+		}
+		if (isset($_POST['genre'])) {
+			$genre = implode(', ', $_POST['genre']);
+			$g = mysqli_real_escape_string($conn, $genre);
+		} else {
+			array_push($errors, "Genre field empty!");
+		}
+
+		if ($_POST['ep'] <= 0) {
+			array_push($errors, "Episodes must not equal or be less than 0!");
+		} else {
+			$ep = mysqli_real_escape_string($conn, $_POST['ep']);
+		}
+
+		date_default_timezone_set("Pacific/Auckland");
+		$now = time();
+		$date_now = date('Y-m-d', $now);
+
+		if (!strtotime($_POST['date_aired']) !== false) {
+			$da = NULL;
+		} else {
+			if ($_POST['date_aired'] > $date_now) {
+				array_push($errors, "Airing date must not be in the future.");
+			} else {
+				$da = mysqli_real_escape_string($conn, $_POST['date_aired']);
+			}
+		}
+
+
+		if (preg_match('/^\w{0,255}$/', $synopsis)) {
+			$s = mysqli_real_escape_string($conn, $synopsis);
+		} else {
+			array_push($errors, "Your synopsis is more than 255 characters!");
+		}
+	}
+}
+
+if ($t && $g && $ep) {
+
+	$check_title_exists = "SELECT `title` FROM `anime` WHERE `title`='" . $t . "'";
+	$r = mysqli_query($conn, $check_title_exists) or trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
+
+	if (mysqli_num_rows($r) == 0) {
+
+		$query = "INSERT into `anime` (`title`, `synopsis`, `genre`, `date_aired`, `episodes`) VALUES ('$t', '$s', '$g', STR_TO_DATE('$da', 'Y-m-d'), '$ep')";
+
+		$result = mysqli_query($conn, $query);
+
+		header("Location: anime.php?s=add");
+		mysqli_close($conn);
+	} else {
+		array_push($errors, "Anime already exists. (Similar Title Found!)");
+	}
+}
+?>
+
+<title>Add Anime</title>
+
+
+<?php
+
+//print errors
+if ($errors) {
+	echo "<div class='alert alert-danger alert-dismissable d-flex align-items-center fade show fixed-top' role='alert'>";
+	echo "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='currentColor' class='bi bi-exclamation-triangle-fill flex-shrink-0 me-2' viewBox='0 0 16 16' role='img' aria-label='Warning:'>
+		<path d='M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z'/>
+	</svg>";
+
+	echo array_values($errors)[0];
+
+	echo "<button type='button' class='btn-close position-absolute top-25 end-0 me-3' data-bs-dismiss='alert' aria-label='Close'></button>     
+		</div>";
+};
+?>
+<div class="container-fluid bg-dark vh-100 w-100 d-flex justify-content-center align-content-center">
+	<main class="text-center w-75 m-auto border border-light rounded-3 px-5 py-4 ">
+
+		<form method="POST" autocomplete="off">
+			<a href="index.php">
+				<img class="p-0 mb-2" src="./images/cat_transparent.svg" width="100px" height="100px" alt="logo">
+			</a>
+			<h1 class="h3 fw-semibold text-light">Enter Anime</h1>
+			<p>Fields with <span class="text-warning fw-bold">*</span> are required fields</p>
+
+			<div class="d-inline-flex gap-5 justify-content-center">
+				<div class="col-md-6">
+					<div class="form-floating">
+						<input name="title" type="text" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="">
+						<label for="floatingInput">Title<span class="text-warning fw-bold">*</span></label>
+						<div id="titleHelp" class="form-text text-warning fw-bold">Please enter the English title.</div>
+					</div>
+				</div>
+				<div class="col-md-5">
+					<label for="floatingInput">Genre<span class="text-warning fw-bold">*</span></label>
+
+					<select name="genre[]" id="floatingInput" class="form-control border border-3 border-info chosen-select" multiple data-placeholder="Start typing genres (e.g Romance)">
+
+						<option>Action</option>
+						<option>Adventure</option>
+						<option>Comedy</option>
+						<option>Drama</option>
+						<option>Slice of Life</option>
+						<option>Fantasy</option>
+						<option>Magic</option>
+						<option>Supernatural</option>
+						<option>Horror</option>
+						<option>Mystery</option>
+						<option>Psychological</option>
+						<option>Romance</option>
+						<option>Sci-Fi</option>
+					</select>
+
+
+					<div id="genreHelp" class="form-text text-light mx-auto">(Max: 5)</div>
+
+				</div>
+				<div class="col-md-2">
+					<div class="form-floating">
+						<input name="ep" type="number" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="" max="1500">
+						<label for="floatingInput">Episodes<span class="text-warning fw-bold">*</span></label>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="d-inline-flex gap-5 justify-content-center mt-2">
+				<div class="col-md-4">
+					<div class=" form-floating">
+						<input name="date_aired" type="date" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="">
+						<label for="floatingInput">Date Aired</label>
+					</div>
+				</div>
+				<div class="col-md-10">
+					<div class="form-floating">
+						<textarea name="synopsis" type="text" class="form-control border border-3 border-info" id="floatingSynopsis" placeholder="" value="" cols="30" rows="5" autofocus>
+						</textarea>
+						<label for="floatingSynopsis">Synopsis</label>
+						<div id="synopsisHelp" class="form-text text-light">Include the general plot of the series, <span class="fw-bold text-warning">without any spoilers!</span> (Max: 255 characters)</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-floating mt-4">
+				<input name="image" type="file" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="" accept=".png,.jpg,.jpeg">
+				<label for="floatingInput">Banner image</label>
+				<div id="imageeHelp" class="form-text text-warning fw-bold">PNG, JPG, JPEG file types only</div>
+			</div>
+
+			<div class="mt-4">
+				<button class="btn btn-lg btn-primary w-100" type="submit" name="submit">Add Anime</button>
+			</div>
+			<p class="mt-5 mb-3 text-muted text-center text-light">&copy; Anicus 2023</p>
+
+		</form>
+	</main>
+</div>
+<?php
+include('footer.php');
