@@ -10,16 +10,14 @@ if (isset($_POST['submit'])) {
 	$errors = array();
 
 	// convert array to string
-
-
-
 	$t = $g = $ep = FALSE;
 
 	if (empty($_POST['title'] || $_POST['genre'] = array() || $_POST['ep'])) {
 		array_push($errors, "Required fields empty!");
 	} else {
-		$title = trim($_POST['title']);
-		$synopsis = trim($_POST['synopsis']);
+
+		$title = preg_replace('/\s+/', '', $_POST['title']);
+		$synopsis = preg_replace('/\s+/', '', $_POST['synopsis']);
 
 		if (preg_match('/^\w{2,}$/', $title)) {
 			if (preg_match('/^\w{2,255}$/', $title)) {
@@ -30,6 +28,7 @@ if (isset($_POST['submit'])) {
 		} else {
 			array_push($errors, "Your title is less than 2 characters long!");
 		}
+
 		if (isset($_POST['genre'])) {
 			$genre = implode(', ', $_POST['genre']);
 			$g = mysqli_real_escape_string($conn, $genre);
@@ -56,7 +55,6 @@ if (isset($_POST['submit'])) {
 				$da = mysqli_real_escape_string($conn, $_POST['date_aired']);
 			}
 		}
-
 
 		if (preg_match('/^\w{0,255}$/', $synopsis)) {
 			$s = mysqli_real_escape_string($conn, $synopsis);
@@ -116,7 +114,7 @@ if ($errors) {
 			<div class="d-inline-flex gap-5 justify-content-center">
 				<div class="col-md-6">
 					<div class="form-floating">
-						<input name="title" type="text" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="">
+						<input name="title" type="text" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="<?php if (isset($_POST['title'])) echo $_POST['title']; ?>">
 						<label for="floatingInput">Title<span class="text-warning fw-bold">*</span></label>
 						<div id="titleHelp" class="form-text text-warning fw-bold">Please enter the English title.</div>
 					</div>
@@ -124,7 +122,7 @@ if ($errors) {
 				<div class="col-md-5">
 					<label for="floatingInput">Genre<span class="text-warning fw-bold">*</span></label>
 
-					<select name="genre[]" id="floatingInput" class="form-control border border-3 border-info chosen-select" multiple data-placeholder="Start typing genres (e.g Romance)">
+					<select name="genre[]" id="floatingInput" class="form-control border border-3 border-info chosen-select" multiple data-placeholder="Start typing genres (e.g Romance)" value="<?php if (isset($_POST['genre'])) echo $_POST['genre']; ?>">
 
 						<option>Action</option>
 						<option>Adventure</option>
@@ -147,7 +145,7 @@ if ($errors) {
 				</div>
 				<div class="col-md-2">
 					<div class="form-floating">
-						<input name="ep" type="number" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="" max="1500">
+						<input name="ep" type="number" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="<?php if (isset($_POST['ep'])) echo $_POST['ep']; ?>" max="1500">
 						<label for="floatingInput">Episodes<span class="text-warning fw-bold">*</span></label>
 					</div>
 				</div>
@@ -163,7 +161,7 @@ if ($errors) {
 				</div>
 				<div class="col-md-10">
 					<div class="form-floating">
-						<textarea name="synopsis" type="text" class="form-control border border-3 border-info" id="floatingSynopsis" placeholder="" value="" cols="30" rows="5" autofocus>
+						<textarea name="synopsis" type="text" class="form-control border border-3 border-info" id="floatingSynopsis" placeholder="" value="<?php if (isset($_POST['synopsis'])) echo $_POST['synopsis']; ?>" cols="30" rows="5" autofocus>
 						</textarea>
 						<label for="floatingSynopsis">Synopsis</label>
 						<div id="synopsisHelp" class="form-text text-light">Include the general plot of the series, <span class="fw-bold text-warning">without any spoilers!</span> (Max: 255 characters)</div>

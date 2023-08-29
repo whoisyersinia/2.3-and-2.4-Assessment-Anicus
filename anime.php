@@ -17,8 +17,14 @@ if (!empty($_GET['s'])) {
 }
 
 ?>
+<title>Anime</title>
 
 <a href="addanime.php">Add anime</a>
+
+<form class="mx-auto pt-2" action="search.php" method="POST">
+	<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" value="<?php if (isset($_POST['searchterm'])) echo $_POST['searchterm']; ?>">
+	<button class="btn btn-outline-primary" type="submit" name="search">Search</button>
+</form>
 
 
 <?php
