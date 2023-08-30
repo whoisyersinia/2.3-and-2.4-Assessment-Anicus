@@ -5,7 +5,7 @@
 	session_start();
 
 	?>
-	<nav class="navbar fixed-top navbar-expand-lg navbar-dark z-1">
+	<nav class="navbar fixed-top navbar-expand-lg navbar-dark z-1 bg-danger">
 
 		<div class="container-fluid ps-3">
 

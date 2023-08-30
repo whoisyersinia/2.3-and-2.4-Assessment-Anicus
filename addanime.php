@@ -16,11 +16,14 @@ if (isset($_POST['submit'])) {
 		array_push($errors, "Required fields empty!");
 	} else {
 
-		$title = preg_replace('/\s+/', '', $_POST['title']);
-		$synopsis = preg_replace('/\s+/', '', $_POST['synopsis']);
+		$title = preg_replace('/\s+/', ' ', $_POST['title']);
+		$synopsis = preg_replace('/\s+/', ' ', $_POST['synopsis']);
 
-		if (preg_match('/^\w{2,}$/', $title)) {
-			if (preg_match('/^\w{2,255}$/', $title)) {
+		$re = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{2,}$/';
+		$re2 = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{2,255}$/';
+
+		if (preg_match($re, $title)) {
+			if (preg_match($re2, $title)) {
 				$t = mysqli_real_escape_string($conn, $title);
 			} else {
 				array_push($errors, "Your title exceeds the chracter limit (255)!");
@@ -56,13 +59,17 @@ if (isset($_POST['submit'])) {
 			}
 		}
 
-		if (preg_match('/^\w{0,255}$/', $synopsis)) {
+		$re3 = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\']{0,255}$/';
+
+		if (preg_match($re3, $synopsis)) {
 			$s = mysqli_real_escape_string($conn, $synopsis);
 		} else {
 			array_push($errors, "Your synopsis is more than 255 characters!");
 		}
 	}
 }
+
+var_dump($da);
 
 if ($t && $g && $ep) {
 
@@ -71,7 +78,7 @@ if ($t && $g && $ep) {
 
 	if (mysqli_num_rows($r) == 0) {
 
-		$query = "INSERT into `anime` (`title`, `synopsis`, `genre`, `date_aired`, `episodes`) VALUES ('$t', '$s', '$g', STR_TO_DATE('$da', 'Y-m-d'), '$ep')";
+		$query = "INSERT into `anime` (`title`, `synopsis`, `genre`, `date_aired`, `episodes`) VALUES ('$t', '$s', '$g', '$da', '$ep')";
 
 		$result = mysqli_query($conn, $query);
 

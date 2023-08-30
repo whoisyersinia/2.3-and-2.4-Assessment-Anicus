@@ -21,7 +21,9 @@ if (isset($_POST['regi'])) {
 		}
 
 		//password validation
-		if (preg_match('/^\w{7,}$/', $trimmed['password'])) {
+		$re = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\']{7,}$/';
+
+		if (preg_match($re, $trimmed['password'])) {
 			if ($_POST['password'] == $_POST['conf_password']) {
 				$p = mysqli_real_escape_string($conn, $trimmed['password']);
 				$p = hash('sha256', $p);
@@ -37,10 +39,10 @@ if (isset($_POST['regi'])) {
 			if (preg_match('/^\w{2,16}$/', $trimmed['username'])) {
 				$u = mysqli_real_escape_string($conn, $trimmed['username']);
 			} else {
-				array_push($errors, "Your username exceeds the chracter limit (16)!");
+				array_push($errors, "Your username exceeds the chracter limit (16) or special character added!");
 			}
 		} else {
-			array_push($errors, "Your username is less than 2 characters long!");
+			array_push($errors, "Your username is less than 2 characters long or special character added!");
 		}
 	}
 }
@@ -114,6 +116,8 @@ if ($errors) {
 			<div class="form-floating">
 				<input name="username" type="text" class="form-control border border-3 border-tertiary" placeholder="Username" value="<?php if (isset($_POST['username'])) echo $_POST['username']; ?>">
 				<label for="floatingInput">Username</label>
+				<div id="usernameHelp" class="form-text text-light">You cannot include special characters (e.g $ or :)</div>
+
 			</div>
 
 			<div class="form-floating mt-4">
