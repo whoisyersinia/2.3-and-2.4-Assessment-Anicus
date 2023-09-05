@@ -57,6 +57,7 @@ if (isset($_GET['id'])) {
 	//create delete url
 	$id = $_GET['id'];
 	$durl = "deleteanime.php?id=$id";
+	$eurl = "editanime.php?id=$id";
 } else {
 	ob_end_clean();
 	header("Location: index.php");
@@ -82,7 +83,7 @@ echo "<title>$t</title>"
 			<!--Function buttons - if anime is uploaded by user or not-->
 
 			<button type='button' class='btn btn-success btn-sm border-black text-white p-2' onclick='$onclick'> <i class="fa-solid fa-plus pe-2"></i>Add to list</button>
-			<button type='button' class='btn btn-danger btn-sm border-black text-white p-2' onclick='$onclick'><i class="fa-solid fa-pencil pe-2"></i>Edit</button>
+			<button type='button' class='btn btn-danger btn-sm border-black text-white p-2' onclick='window.location.href=<?php echo "\"$eurl\"" ?>'><i class="fa-solid fa-pencil pe-2"></i>Edit</button>
 			<button type='button' class="btn btn-warning btn-sm border-black text-white p-2 mx-2" onclick='window.location.href=<?php echo "\"$durl\"" ?>'> <i class="fa-solid fa-trash-can pe-2"></i></i>Delete</button>
 		</div>
 

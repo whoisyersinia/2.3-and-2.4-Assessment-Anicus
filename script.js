@@ -6,6 +6,18 @@ $(document).ready(function () {
 
 $(".chosen-select").chosen({ max_selected_options: 5 });
 
+$(document).ready(function () {
+  var edit = document.getElementById("gedit").value;
+
+  var str_array = edit.split(",");
+
+  for (var i = 0; i < str_array.length; i++) {
+    str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+  }
+
+  $(".chosen-select").val(str_array).trigger("chosen:updated");
+});
+
 setTimeout(function () {
   bootstrap.Alert.getOrCreateInstance(document.querySelector(".alert")).close();
 }, 3000);
