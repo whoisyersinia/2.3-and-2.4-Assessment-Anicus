@@ -17,8 +17,6 @@ if (isset($_POST['submit'])) {
 	} else {
 
 		$title = preg_replace('/\s+/', ' ', $_POST['title']);
-		$synopsis = preg_replace('/\s+/', ' ', $_POST['synopsis']);
-
 		$re = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{2,}$/';
 		$re2 = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{2,255}$/';
 
@@ -59,17 +57,20 @@ if (isset($_POST['submit'])) {
 			}
 		}
 
-		$re3 = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\']{0,255}$/';
+		$synopsis = preg_replace('/\s+/', ' ', $_POST['synopsis']);
 
-		if (preg_match($re3, $synopsis)) {
-			$s = mysqli_real_escape_string($conn, $synopsis);
+		$re3 = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{0,255}$/';
+		if (!empty($synopsis)) {
+			if (preg_match($re3, $synopsis)) {
+				$sy = mysqli_real_escape_string($conn, $synopsis);
+			} else {
+				array_push($errors, "Your synopsis is more than 255 characters!");
+			}
 		} else {
-			array_push($errors, "Your synopsis is more than 255 characters!");
+			$sy = NULL;
 		}
 	}
 }
-
-var_dump($da);
 
 if ($t && $g && $ep) {
 
@@ -78,14 +79,14 @@ if ($t && $g && $ep) {
 
 	if (mysqli_num_rows($r) == 0) {
 
-		$query = "INSERT into `anime` (`title`, `synopsis`, `genre`, `date_aired`, `episodes`) VALUES ('$t', '$s', '$g', '$da', '$ep')";
+		$query = "INSERT into `anime` (`title`, `synopsis`, `genre`, `date_aired`, `episodes`) VALUES ('$t', " . ($sy == NULL ? "NULL" : "'$sy'") . ", '$g', " . ($da == NULL ? "NULL" : "'$da'") . ", '$ep')";
 
 		$result = mysqli_query($conn, $query);
 
 		header("Location: anime.php?s=add");
 		mysqli_close($conn);
 	} else {
-		array_push($errors, "Anime already exists. (Similar Title Found!)");
+		array_push($errors, "Anime already exists. (Same Title Found!)");
 	}
 }
 ?>
@@ -168,8 +169,7 @@ if ($errors) {
 				</div>
 				<div class="col-md-10">
 					<div class="form-floating">
-						<textarea name="synopsis" type="text" class="form-control border border-3 border-info" id="floatingSynopsis" placeholder="" value="<?php if (isset($_POST['synopsis'])) echo $_POST['synopsis']; ?>" cols="30" rows="5" autofocus>
-						</textarea>
+						<textarea name="synopsis" type="text" class="form-control border border-3 border-info" id="floatingSynopsis" cols="30" rows="5"></textarea>
 						<label for="floatingSynopsis">Synopsis</label>
 						<div id="synopsisHelp" class="form-text text-light">Include the general plot of the series, <span class="fw-bold text-warning">without any spoilers!</span> (Max: 255 characters)</div>
 					</div>
