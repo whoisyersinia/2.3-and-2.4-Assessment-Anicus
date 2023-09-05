@@ -41,6 +41,10 @@ if (btn_logout != null) {
 } else {
   btn_logout = null;
 }
+const animeinfo = () => {
+  let val = (id) => document.querySelector(id).value;
+  document.location.href = "infoanime.php?id=" + val("#url");
+};
 
 window.onload = function () {
   var oneMinute = 59,
