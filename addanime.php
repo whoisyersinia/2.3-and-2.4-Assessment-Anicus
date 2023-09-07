@@ -1,16 +1,25 @@
 <?php
 require_once("./includes/connectlocal.inc");
 require_once('./includes/basehead.html');
+session_start();
+
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+$errors = array();
+
+// convert array to string
+$t = $g = $ep = $da = $sy = FALSE;
+// check if user has logged in - if not 403 foribbden error
+if (!isset($_SESSION['login'])) {
+	http_response_code(403);
+	header("Location: /anicus/errordocs/403.html");
+	die();
+}
 
 if (isset($_POST['submit'])) {
-	ini_set('display_errors', '1');
-	ini_set('display_startup_errors', '1');
-	error_reporting(E_ALL);
 
-	$errors = array();
-
-	// convert array to string
-	$t = $g = $ep = FALSE;
 
 	if (empty($_POST['title'] || $_POST['genre'] = array() || $_POST['ep'])) {
 		array_push($errors, "Required fields empty!");
@@ -43,28 +52,28 @@ if (isset($_POST['submit'])) {
 			$ep = mysqli_real_escape_string($conn, $_POST['ep']);
 		}
 
-		date_default_timezone_set("Pacific/Auckland");
-		$now = time();
-		$date_now = date('Y-m-d', $now);
 
-		if (!strtotime($_POST['date_aired']) !== false) {
-			$da = NULL;
-		} else {
+		if (!empty($_POST['date_aired'])) {
+			date_default_timezone_set("Pacific/Auckland");
+			$now = time();
+			$date_now = date('Y-m-d', $now);
 			if ($_POST['date_aired'] > $date_now) {
 				array_push($errors, "Airing date must not be in the future.");
 			} else {
 				$da = mysqli_real_escape_string($conn, $_POST['date_aired']);
 			}
+		} else {
+			$da = NULL;
 		}
 
 		$synopsis = preg_replace('/\s+/', ' ', $_POST['synopsis']);
 
 		$re3 = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{0,255}$/';
 		if (!empty($synopsis)) {
-			if (preg_match($re3, $synopsis)) {
-				$sy = mysqli_real_escape_string($conn, $synopsis);
-			} else {
+			if (!preg_match($re3, $synopsis)) {
 				array_push($errors, "Your synopsis is more than 255 characters!");
+			} else {
+				$sy = mysqli_real_escape_string($conn, $synopsis);
 			}
 		} else {
 			$sy = NULL;
@@ -72,7 +81,7 @@ if (isset($_POST['submit'])) {
 	}
 }
 
-if ($t && $g && $ep) {
+if ($t && $g && $ep && $da && $sy) {
 
 	$check_title_exists = "SELECT `title` FROM `anime` WHERE `title`='" . $t . "'";
 	$r = mysqli_query($conn, $check_title_exists) or trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
@@ -89,26 +98,27 @@ if ($t && $g && $ep) {
 		array_push($errors, "Anime already exists. (Same Title Found!)");
 	}
 }
-?>
-
-<title>Add Anime</title>
-
-
-<?php
 
 //print errors
 if ($errors) {
 	echo "<div class='alert alert-danger alert-dismissable d-flex align-items-center fade show fixed-top' role='alert'>";
 	echo "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='currentColor' class='bi bi-exclamation-triangle-fill flex-shrink-0 me-2' viewBox='0 0 16 16' role='img' aria-label='Warning:'>
-		<path d='M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z'/>
-	</svg>";
+	<path d='M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z'/>
+</svg>";
 
 	echo array_values($errors)[0];
 
 	echo "<button type='button' class='btn-close position-absolute top-25 end-0 me-3' data-bs-dismiss='alert' aria-label='Close'></button>     
-		</div>";
+	</div>";
 };
+
+
 ?>
+
+<title>Add Anime</title>
+
+
+
 <div class="container-fluid bg-dark vh-100 w-100 d-flex justify-content-center align-content-center">
 	<main class="text-center w-75 m-auto border border-light rounded-3 px-5 py-4 ">
 
@@ -129,6 +139,7 @@ if ($errors) {
 				</div>
 				<div class="col-md-5">
 					<label for="floatingInput">Genre<span class="text-warning fw-bold">*</span></label>
+					<input class="d-none" id="gedit" value="<?php if (isset($genre)) echo $genre; ?>">
 
 					<select name="genre[]" id="floatingInput" class="form-control border border-3 border-info chosen-select" multiple data-placeholder="Start typing genres (e.g Romance)" value="<?php if (isset($_POST['genre'])) echo $_POST['genre']; ?>">
 
@@ -163,13 +174,13 @@ if ($errors) {
 			<div class="d-inline-flex gap-5 justify-content-center mt-2">
 				<div class="col-md-4">
 					<div class=" form-floating">
-						<input name="date_aired" type="date" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="">
+						<input name="date_aired" type="date" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="<?php if (isset($_POST['date_aired'])) echo $_POST['date_aired']; ?>">
 						<label for="floatingInput">Date Aired</label>
 					</div>
 				</div>
 				<div class="col-md-10">
 					<div class="form-floating">
-						<textarea name="synopsis" type="text" class="form-control border border-3 border-info" id="floatingSynopsis" cols="30" rows="5"></textarea>
+						<textarea name="synopsis" type="text" class="form-control border border-3 border-info" id="floatingSynopsis" cols="30" rows="5"><?php if (isset($_POST['synopsis'])) echo $_POST['synopsis']; ?></textarea>
 						<label for="floatingSynopsis">Synopsis</label>
 						<div id="synopsisHelp" class="form-text text-light">Include the general plot of the series, <span class="fw-bold text-warning">without any spoilers!</span> (Max: 255 characters)</div>
 					</div>

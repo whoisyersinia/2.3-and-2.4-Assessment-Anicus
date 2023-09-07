@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
 		$errors = array();
 
 		// convert array to string
-		$t = $g = $ep = FALSE;
+		$t = $g = $ep = $da = $sy = FALSE;
 
 		if (isset($_POST['genre'])) {
 			$genre = implode(', ', $_POST['genre']);
@@ -90,7 +90,6 @@ if (isset($_GET['id'])) {
 					$da = mysqli_real_escape_string($conn, $_POST['date_aired']);
 				}
 			}
-			var_dump($da);
 
 			$synopsis = preg_replace('/\s+/', ' ', $_POST['synopsis']);
 
@@ -106,28 +105,28 @@ if (isset($_GET['id'])) {
 			}
 		}
 	}
-
-	if ($t && $g && $ep) {
-
-		$check_title_exists = "SELECT `title` FROM `anime` WHERE `idanime` != '$id' AND `title` = '" . $t . "'";
-		$r = mysqli_query($conn, $check_title_exists) or trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
-
-		if (mysqli_num_rows($r) == 0) {
-
-			$query = "UPDATE `anime` SET `title` = '$t', `synopsis` = " . ($sy == NULL ? "NULL" : "'$sy'") . ", `genre` = '$g', `date_aired` = " . ($da == NULL ? "NULL" : "'$da'") . ", `episodes` = '$ep' WHERE (`idanime` = '$id')";
-
-			$result = mysqli_query($conn, $query);
-
-			header("Location: anime.php?s=update");
-			mysqli_close($conn);
-		} else {
-			array_push($errors, "Anime already exists. (Same Title Found!)");
-		}
-	}
 } else {
 	ob_end_clean();
 	header("Location: index.php");
 	exit();
+}
+
+if ($t && $g && $ep && $da && $sy) {
+
+	$check_title_exists = "SELECT `title` FROM `anime` WHERE `idanime` != '$id' AND `title` = '" . $t . "'";
+	$r = mysqli_query($conn, $check_title_exists) or trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
+
+	if (mysqli_num_rows($r) == 0) {
+
+		$query = "UPDATE `anime` SET `title` = '$t', `synopsis` = " . ($sy == NULL ? "NULL" : "'$sy'") . ", `genre` = '$g', `date_aired` = " . ($da == NULL ? "NULL" : "'$da'") . ", `episodes` = '$ep' WHERE (`idanime` = '$id')";
+
+		$result = mysqli_query($conn, $query);
+
+		header("Location: anime.php?s=update");
+		mysqli_close($conn);
+	} else {
+		array_push($errors, "Anime already exists. (Same Title Found!)");
+	}
 }
 
 //link to go back
@@ -179,7 +178,7 @@ if ($errors) {
 					<div class="col-md-5">
 						<label for="floatingInput">Genre<span class="text-warning fw-bold">*</span></label>
 
-						<!-- MAKE A COMMENT ON IMLICATIONS -->
+						<!-- MAKE A COMMENT ON IMPLICATIONS -->
 						<!-- Takes previous genre and puts it in a input and using javascript splits the string and converts it to options in the select -->
 
 						<input class="d-none" id="gedit" value="<?php echo $ge; ?>">

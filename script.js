@@ -1,3 +1,8 @@
+function dropdown(val) {
+  var y = document.getElementsByClassName("btn btn-default dropdown-toggle");
+  var aNode = (y[0].innerHTML = val + ' <span class="text"></span>'); // Append
+}
+
 $(document).ready(function () {
   $(".chosen-select").chosen({
     no_results_text: "Oops, nothing found!",

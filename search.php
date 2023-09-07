@@ -13,7 +13,13 @@ session_cache_limiter('private_no_expire');
 if (isset($_POST['search'])) {
 	$searchtitle = $_POST['searchterm'];
 
-	$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%')";
+	if (isset($_POST['genre'])) {
+		$genre = implode(', ', $_POST['genre']);
+		$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`genre` LIKE '%$genre%')";
+	} else {
+		$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') ";
+	}
+
 	$r = mysqli_query($conn, $q);
 }
 if (mysqli_num_rows($r) == 0) {
@@ -35,7 +41,6 @@ while ($row = mysqli_fetch_array($r)) {
 	} else {
 		$da = "Unknown";
 	}
-
 	if (!empty($row['synopsis'])) {
 		$sy = $row['synopsis'];
 	} else {
@@ -44,11 +49,14 @@ while ($row = mysqli_fetch_array($r)) {
 
 	$id = $row['idanime'];
 
+
+	//links for redirect
 	$url = "infoanime.php?id=$id";
 	$windowloc = "window.location.href=";
 	$onclick = $windowloc . "\"$url\"";
 
 
+	//push the card to an array
 	array_push(
 		$animeresult,
 		"<div class='col d-flex justify-content-start align-self-start'>
@@ -80,9 +88,42 @@ include("header.php");
 	<?php
 	echo $msg;
 	?>
-	<form class="d-inline-flex mx-5" action="search.php" method="POST">
-		<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" value="<?php if (isset($_POST['searchterm'])) echo $_POST['searchterm']; ?>" required>
-		<button class="btn btn-outline-primary" type="submit" name="search">Search</button>
+	<form action="search.php" method="POST">
+		<div class="d-inline-flex gap-2 container-fluid">
+			<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="text">All</span>
+			</button>
+
+			<ul class="dropdown-menu" value="all">
+				<li><a class="dropdown-item" href="#" onclick="dropdown(this.innerHTML);">All</a></li>
+				<li><a class="dropdown-item" href="#" onclick="dropdown(this.innerHTML);">Uploaded anime</a></li>
+				<li><a class="dropdown-item" href="#" onclick="dropdown(this.innerHTML);">Anime in your list</a></li>
+			</ul>
+
+			<input class="d-none" id="gedit" value="<?php echo $genre; ?>">
+			<select name="genre[]" id="floatingInput" class="form-control border border-3 border-info chosen-select" multiple data-placeholder="Filter genres" style="width: 80rem;">
+
+				<option value="Action">Action</option>
+				<option value="Adventure">Adventure</option>
+				<option value="Comedy">Comedy</option>
+				<option value="Drama">Drama</option>
+				<option value="Slice of Life">Slice of Life</option>
+				<option value="Fantasy">Fantasy</option>
+				<option value="Magic">Magic</option>
+				<option value="Supernatural">Supernatural</option>
+				<option value="Horror">Horror</option>
+				<option value="Mystery">Mystery</option>
+				<option value="Psychological">Psychological</option>
+				<option value="Romance">Romance</option>
+				<option value="Sci-Fi">Sci-Fi</option>
+			</select>
+
+
+			<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" value="<?php if (isset($_POST['searchterm'])) echo $_POST['searchterm']; ?>">
+			<button class="btn btn-outline-primary " type="submit" name="search">Search</button>
+		</div>
+		<div class="d-inline-flex gap-2 mx-3">
+		</div>
+
 	</form>
 
 	<?php
