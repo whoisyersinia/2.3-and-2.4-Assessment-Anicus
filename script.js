@@ -1,7 +1,16 @@
-function dropdown(val) {
-  var y = document.getElementsByClassName("btn btn-default dropdown-toggle");
-  var aNode = (y[0].innerHTML = val + ' <span class="text"></span>'); // Append
-}
+$(document).ready(function () {
+  // On refresh check if there are values selected
+  if (localStorage.selectVal) {
+    // Select the value stored
+    $("#filter").val(localStorage.selectVal);
+  }
+});
+
+// On change store the value
+$("#filter").on("change", function () {
+  var currentVal = $(this).val();
+  localStorage.setItem("selectVal", currentVal);
+});
 
 $(document).ready(function () {
   $(".chosen-select").chosen({

@@ -22,7 +22,8 @@ session_start();
 		<path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z'/>
 		</svg>";
 
-		echo "Welcome, " . $_SESSION['login']['username'] . ".";
+		echo "Welcome, " . $_SESSION['username'] . ".";
+
 
 		echo "<button type='button' class='btn-close position-absolute top-25 end-0 me-3' data-bs-dismiss='alert' aria-label='Close'></button>     
 		</div>";
@@ -69,7 +70,6 @@ session_start();
 						<p class="lead mb-4 text-primary text-shadow-1 fw-bold">By You</p>
 					</div>
 				</div>
-
 				<div class="px-4 text-left content text-primary">
 					<h1 class="fw-bold main-text start_fade-left">Organise<span class="period">.</span></h1>
 					<h1 class="fw-bold main-text start_fade-left">Share<span class="period">.</span></h1>

@@ -2,30 +2,76 @@
 
 require_once("./includes/connectlocal.inc");
 require_once('./includes/basehead.html');
+include("header.php");
+
 
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-header('Cache-Control: no cache');
-session_cache_limiter('private_no_expire');
+
+
 
 if (isset($_POST['search'])) {
 	$searchtitle = $_POST['searchterm'];
+	// $req_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+	// $q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%')";
+	// $r = mysqli_query($conn, $q);
+	// $row = mysqli_fetch_row($r);
+	// $page = $row[0];
 
-	if (isset($_POST['genre'])) {
-		$genre = implode(', ', $_POST['genre']);
-		$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`genre` LIKE '%$genre%')";
+
+	// $amount = 20;
+	// $page_count = ceil($page / $amount);
+
+	// $first_product_shown = ($req_page - 1) * $amount;
+
+	// echo '<p>';
+	// for ($i = 1; $i <= $page_count; $i++) {
+	// 	if ($i == $req_page) {
+	// 		echo $i;
+	// 	} else {
+	// 		echo '<a href="/products/samsung/' . $i . '">' . $i . '</a> ';
+	// 	}
+	// }
+
+
+
+
+	if (isset($_POST['filter'])) {
+		$filter = $_POST['filter'];
+		$iduser = $_SESSION['iduser'];
+		if ($filter === "upload") {
+			$iduser = $_SESSION['iduser'];
+			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`iduser` = $iduser) LIMIT $page, $amount";
+			if (isset($_POST['genre'])) {
+				$genre = implode(', ', $_POST['genre']);
+				$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`genre` LIKE '%$genre%') AND (`iduser` = $iduser) LIMIT $page, $amount";
+			}
+		} else {
+			if (isset($_POST['genre'])) {
+				$genre = implode(', ', $_POST['genre']);
+				$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`genre` LIKE '%$genre%') LIMIT $page, $amount";
+			} else {
+				$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') ";
+			}
+		}
 	} else {
-		$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') ";
+		if (isset($_POST['genre'])) {
+			$genre = implode(', ', $_POST['genre']);
+			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`genre` LIKE '%$genre%') LIMIT $page, $amount";
+		} else {
+			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%' ) LIMIT $page, $amount ";
+		}
 	}
+
 
 	$r = mysqli_query($conn, $q);
 }
+
 if (mysqli_num_rows($r) == 0) {
 	$msg = "<h1 class='px-5'>Sorry, no results found!</h1>";
 }
-
 // count how many results are there
 $result_count = 0;
 $animeresult = array();
@@ -79,8 +125,6 @@ while ($row = mysqli_fetch_array($r)) {
 }
 
 echo "<title>Search - $searchtitle </title>";
-include("header.php");
-
 ?>
 
 <body class="flex-column min-vh-100 mt-5 pt-5 ">
@@ -89,15 +133,14 @@ include("header.php");
 	echo $msg;
 	?>
 	<form action="search.php" method="POST">
-		<div class="d-inline-flex gap-2 container-fluid">
-			<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span class="text">All</span>
-			</button>
+		<div class=" d-inline-flex gap-2 container-fluid">
+			<i class="fa-solid text-tertiary fa-filter justify-content-center align-self-center fa-xl"></i>
+			<select name="filter" class="form-select" style="width: 15rem;" id="filter">">
+				<option value="all" selected>All</option>
+				<option value="upload">Uploaded anime</option>
+				<option value="list">Anime in your list</option>
+			</select>
 
-			<ul class="dropdown-menu" value="all">
-				<li><a class="dropdown-item" href="#" onclick="dropdown(this.innerHTML);">All</a></li>
-				<li><a class="dropdown-item" href="#" onclick="dropdown(this.innerHTML);">Uploaded anime</a></li>
-				<li><a class="dropdown-item" href="#" onclick="dropdown(this.innerHTML);">Anime in your list</a></li>
-			</ul>
 
 			<input class="d-none" id="gedit" value="<?php echo $genre; ?>">
 			<select name="genre[]" id="floatingInput" class="form-control border border-3 border-info chosen-select" multiple data-placeholder="Filter genres" style="width: 80rem;">

@@ -111,7 +111,7 @@ if (isset($_GET['id'])) {
 	exit();
 }
 
-if ($t && $g && $ep && $da && $sy) {
+if ($t && $g && $ep && ($da !== False) && ($sy !== False)) {
 
 	$check_title_exists = "SELECT `title` FROM `anime` WHERE `idanime` != '$id' AND `title` = '" . $t . "'";
 	$r = mysqli_query($conn, $check_title_exists) or trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));

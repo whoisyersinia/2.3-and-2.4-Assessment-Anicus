@@ -1,16 +1,9 @@
 <?php
 require_once("./includes/connectlocal.inc");
 require_once('./includes/basehead.html');
+
 session_start();
 
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
-
-$errors = array();
-
-// convert array to string
-$t = $g = $ep = $da = $sy = FALSE;
 // check if user has logged in - if not 403 foribbden error
 if (!isset($_SESSION['login'])) {
 	http_response_code(403);
@@ -18,8 +11,13 @@ if (!isset($_SESSION['login'])) {
 	die();
 }
 
-if (isset($_POST['submit'])) {
+$errors = array();
+$t = $g = $ep = $da = $sy = FALSE;
 
+if (isset($_POST['submit'])) {
+	ini_set('display_errors', '1');
+	ini_set('display_startup_errors', '1');
+	error_reporting(E_ALL);
 
 	if (empty($_POST['title'] || $_POST['genre'] = array() || $_POST['ep'])) {
 		array_push($errors, "Required fields empty!");
@@ -81,23 +79,26 @@ if (isset($_POST['submit'])) {
 	}
 }
 
-if ($t && $g && $ep && $da && $sy) {
+if ($t && $g && $ep && ($da !== False) && ($sy !== False)) {
 
 	$check_title_exists = "SELECT `title` FROM `anime` WHERE `title`='" . $t . "'";
 	$r = mysqli_query($conn, $check_title_exists) or trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
 
 	if (mysqli_num_rows($r) == 0) {
+		$userid = $_SESSION['iduser'];
+		$now = time();
+		$date_now = date('Y-m-d', $now);
 
-		$query = "INSERT into `anime` (`title`, `synopsis`, `genre`, `date_aired`, `episodes`) VALUES ('$t', " . ($sy == NULL ? "NULL" : "'$sy'") . ", '$g', " . ($da == NULL ? "NULL" : "'$da'") . ", '$ep')";
+		$query = "INSERT into `anime` (`title`, `synopsis`, `genre`, `date_aired`, `episodes`, `updated_on`, `iduser`) VALUES ('$t', " . ($sy == NULL ? "NULL" : "'$sy'") . ", '$g', " . ($da == NULL ? "NULL" : "'$da'") . ", '$ep', '$date_now','$userid')";
 
 		$result = mysqli_query($conn, $query);
-
 		header("Location: anime.php?s=add");
 		mysqli_close($conn);
 	} else {
 		array_push($errors, "Anime already exists. (Same Title Found!)");
 	}
 }
+
 
 //print errors
 if ($errors) {
@@ -185,12 +186,6 @@ if ($errors) {
 						<div id="synopsisHelp" class="form-text text-light">Include the general plot of the series, <span class="fw-bold text-warning">without any spoilers!</span> (Max: 255 characters)</div>
 					</div>
 				</div>
-			</div>
-
-			<div class="form-floating mt-4">
-				<input name="image" type="file" class="form-control border border-3 border-info" id="floatingInput" placeholder="" value="" accept=".png,.jpg,.jpeg">
-				<label for="floatingInput">Banner image</label>
-				<div id="imageeHelp" class="form-text text-warning fw-bold">PNG, JPG, JPEG file types only</div>
 			</div>
 
 			<div class="mt-4">

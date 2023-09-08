@@ -39,7 +39,9 @@ if (isset($_POST['login'])) {
 		$r = mysqli_query($conn, $q) or  trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
 
 		if (mysqli_num_rows($r) == 1) {
-			$_SESSION['login'] = mysqli_fetch_array($r, MYSQLI_ASSOC);
+			//split user variables to its session variable
+			$_SESSION = mysqli_fetch_array($r, MYSQLI_ASSOC);
+			$_SESSION['login'] = true;
 			mysqli_free_result($r);
 			mysqli_close($conn);
 
