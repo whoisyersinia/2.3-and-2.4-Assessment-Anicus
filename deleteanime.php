@@ -3,6 +3,12 @@ require_once('./includes/basehead.html');
 require_once("./includes/connectlocal.inc");
 require_once('header.php');
 
+// check if user has logged in - if not 403 foribbden error
+if (!isset($_SESSION['login'])) {
+	http_response_code(403);
+	header("Location: /anicus/errordocs/403.html");
+	die();
+}
 $errors = array();
 
 if (isset($_GET['id'])) {
@@ -20,6 +26,18 @@ if (isset($_GET['id'])) {
 	if (mysqli_num_rows($r) == 0) {
 		http_response_code(404);
 		include('404.php');
+		die();
+	}
+
+	//check if user added the anime being edited 
+	$userid = $_SESSION['iduser'];
+
+	$q = "SELECT * FROM `anime` WHERE (`idanime` = '$id') AND (`iduser` = '$userid')";
+	$r =  mysqli_query($conn, $q) or trigger_error("Query: $q\b<br/>MySQL Error: " . mysqli_error($conn));
+
+	if (mysqli_num_rows($r) == 0) {
+		http_response_code(403);
+		header("Location: /anicus/errordocs/403.html");
 		die();
 	}
 

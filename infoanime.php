@@ -3,11 +3,6 @@
 require_once("./includes/connectlocal.inc");
 require_once('./includes/basehead.html');
 
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
-
-
 if (isset($_GET['id'])) {
 
 	if ($_GET['id'] == "") {
@@ -58,6 +53,9 @@ if (isset($_GET['id'])) {
 	$id = $_GET['id'];
 	$durl = "deleteanime.php?id=$id";
 	$eurl = "editanime.php?id=$id";
+
+	$donclick = "\"$durl\"";
+	$eonclick = "\"$eurl\"";
 } else {
 	ob_end_clean();
 	header("Location: index.php");
@@ -80,11 +78,24 @@ echo "<title>$t</title>"
 		<h6>Aired: <?php echo $da ?> </h6>
 
 		<div class="pt-2">
-			<!--Function buttons - if anime is uploaded by user or not-->
 
-			<button type='button' class='btn btn-success btn-sm border-black text-white p-2' onclick='$onclick'> <i class="fa-solid fa-plus pe-2"></i>Add to list</button>
-			<button type='button' class='btn btn-danger btn-sm border-black text-white p-2' onclick='window.location.href=<?php echo "\"$eurl\"" ?>'><i class="fa-solid fa-pencil pe-2"></i>Edit</button>
-			<button type='button' class="btn btn-warning btn-sm border-black text-white p-2 mx-2" onclick='window.location.href=<?php echo "\"$durl\"" ?>'> <i class="fa-solid fa-trash-can pe-2"></i></i>Delete</button>
+			<!--Function buttons - if anime is uploaded by user or not-->
+			<?php
+
+			$userid = $_SESSION['iduser'];
+			$id = $_GET['id'];
+			$q = "SELECT * FROM `anime` WHERE (`idanime` = '$id') AND (`iduser` = '$userid')";
+			$r =  mysqli_query($conn, $q) or trigger_error("Query: $q\b<br/>MySQL Error: " . mysqli_error($conn));
+
+			if (mysqli_num_rows($r) == 1) {
+				echo "	<button type='button' class='btn btn-danger btn-sm border-black text-white p-2' onclick='window.location.href=$eonclick'><i class='fa-solid fa-pencil pe-2'></i>Edit</button>";
+				echo "<button type='button' class='btn btn-warning btn-sm border-black text-white p-2 mx-2' onclick='window.location.href=$donclick'> <i class='fa-solid fa-trash-can pe-2'></i></i>Delete</button>";
+			} else {
+				echo "<button type='button' class='btn btn-success btn-sm border-black text-white p-2' onclick='$onclick'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>";
+			}
+			?>
+
+
 		</div>
 
 		<h3 class="pt-4">Synopsis:</h3>

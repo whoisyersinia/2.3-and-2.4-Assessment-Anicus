@@ -2,11 +2,21 @@
 require_once('./includes/basehead.html');
 require_once("./includes/connectlocal.inc");
 
+
+session_start();
+
+// check if user has logged in - if not 403 foribbden error
+if (!isset($_SESSION['login'])) {
+	http_response_code(403);
+	header("Location: /anicus/errordocs/403.html");
+	die();
+}
 $errors = array();
 
 if (isset($_GET['id'])) {
-
+	//check if anime exists 
 	$id = $_GET['id'];
+
 	$q = "SELECT * FROM `anime` WHERE (`idanime` = '$id')";
 	$r =  mysqli_query($conn, $q) or trigger_error("Query: $q\b<br/>MySQL Error: " . mysqli_error($conn));
 
@@ -18,7 +28,19 @@ if (isset($_GET['id'])) {
 
 	if (mysqli_num_rows($r) == 0) {
 		http_response_code(404);
-		include('404.php');
+		header("Location: /anicus/errordocs/404.html");
+		die();
+	}
+
+	//check if user added the anime being edited 
+	$userid = $_SESSION['iduser'];
+
+	$q = "SELECT * FROM `anime` WHERE (`idanime` = '$id') AND (`iduser` = '$userid')";
+	$r =  mysqli_query($conn, $q) or trigger_error("Query: $q\b<br/>MySQL Error: " . mysqli_error($conn));
+
+	if (mysqli_num_rows($r) == 0) {
+		http_response_code(403);
+		header("Location: /anicus/errordocs/403.html");
 		die();
 	}
 
@@ -117,8 +139,12 @@ if ($t && $g && $ep && ($da !== False) && ($sy !== False)) {
 	$r = mysqli_query($conn, $check_title_exists) or trigger_error("Query: $q\n<br>MySQL Error: " . mysqli_error($conn));
 
 	if (mysqli_num_rows($r) == 0) {
+		$now = time();
+		$date_now = date('Y-m-d', $now);
 
-		$query = "UPDATE `anime` SET `title` = '$t', `synopsis` = " . ($sy == NULL ? "NULL" : "'$sy'") . ", `genre` = '$g', `date_aired` = " . ($da == NULL ? "NULL" : "'$da'") . ", `episodes` = '$ep' WHERE (`idanime` = '$id')";
+
+		//update query where the idanime = get id from link
+		$query = "UPDATE `anime` SET `title` = '$t', `synopsis` = " . ($sy == NULL ? "NULL" : "'$sy'") . ", `genre` = '$g', `date_aired` = " . ($da == NULL ? "NULL" : "'$da'") . ", `episodes` = '$ep', `updated_on` ='$date_now' WHERE (`idanime` = '$id')";
 
 		$result = mysqli_query($conn, $query);
 

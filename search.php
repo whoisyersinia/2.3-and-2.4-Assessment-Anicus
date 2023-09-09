@@ -9,20 +9,19 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-
 if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
 	$page_no = $_GET['page_no'];
 } else {
 	$page_no = 1;
 }
 
-
-
 $query = $_GET['searchterm'];
 
 // to calculate how many records there are for pagination 
+
 if (isset($_GET['filter'])) {
 	$filter = $_GET['filter'];
+
 	$iduser = $_SESSION['iduser'];
 	if ($filter === "upload") {
 		$iduser = $_SESSION['iduser'];
@@ -99,6 +98,9 @@ if (mysqli_num_rows($r) == 0) {
 // count how many results are there
 $result_count = 0;
 $animeresult = array();
+if (isset($_SESSION['login'])) {
+	$userid = $_SESSION['iduser'];
+}
 
 while ($row = mysqli_fetch_array($r)) {
 	$msg = "<h1 class='fs-1 px-5'>Here's what we found for $query. </h1>";
@@ -118,6 +120,8 @@ while ($row = mysqli_fetch_array($r)) {
 	}
 
 	$id = $row['idanime'];
+	$iduser = $row['iduser'];
+
 
 
 	//links for redirect
@@ -126,44 +130,84 @@ while ($row = mysqli_fetch_array($r)) {
 	$onclick = $windowloc . "\"$url\"";
 
 
-	//push the card to an array
-	array_push(
-		$animeresult,
-		"<div class='col d-flex justify-content-start align-self-start'>
-							<div class='card' style='width: 18rem;'>
-								<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
-								<div class='card-body mx-1'>
-									<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
-									<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
-									<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
-									<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
-									<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
-									<div class='pt-2 pb-2'>
-										<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'>Read More</button>
+	//push the card to an array 
+	if (isset($_SESSION['login'])) {
+		if ($iduser === $userid) {
+			array_push(
+				$animeresult,
+				"<div class='col d-flex justify-content-start align-self-start'>
+									<div class='card' style='width: 18rem;'>
+										<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+										<div class='card-body mx-1'>
+											<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+											<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+											<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+											<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+											<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+											<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
+												<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'><i class='fa-solid fa-pencil pe-2'></i>Edit / Read More</button>
+											</div>
+										</div>
+									</div>
+									</div>
+								"
+			);
+		} else {
+			array_push(
+				$animeresult,
+				"<div class='col d-flex justify-content-start align-self-start'>
+									<div class='card' style='width: 18rem;'>
+										<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+										<div class='card-body mx-1'>
+											<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+											<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+											<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+											<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+											<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+											<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
+												<button type='button' class='btn btn-success btn-sm border-black text-white'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>
+												<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'>Read More</button>
+											</div>
+										</div>
+									</div>
+									</div>
+								"
+			);
+		}
+	} else {
+		array_push(
+			$animeresult,
+			"<div class='col d-flex justify-content-start align-self-start'>
+								<div class='card' style='width: 18rem;'>
+									<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+									<div class='card-body mx-1'>
+										<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+										<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+										<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+										<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+										<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+										<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
+											<button type='button' class='btn btn-success btn-sm border-black text-white'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>
+											<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'>Read More</button>
+										</div>
 									</div>
 								</div>
-							</div>
-							</div>
-						"
-	);
+								</div>
+							"
+		);
+	}
 }
 
 echo "<title>Search Results</title>";
 
 // to include get attributes/variables into pagination
-foreach ($_GET as $key => $value) {;
-}
 
-function addOrUpdateUrlParam($key, $value)
-{
-	$params = $_GET;
-	unset($params[$key]);
-	$params[$key] = $value;
-	return basename($_SERVER['PHP_SELF']) . '?' . http_build_query($params);
-}
+$params = $_GET;
+array_pop($params);
+$url = basename($_SERVER['PHP_SELF']) . '?' . http_build_query($params);
 
 
-$url = addOrUpdateUrlParam($key, $value);
+
 ?>
 
 <body class="flex-column min-vh-100 mt-5 pt-5 ">
@@ -174,11 +218,19 @@ $url = addOrUpdateUrlParam($key, $value);
 	<form action="search.php" method="GET">
 		<div class=" d-inline-flex gap-2 container-fluid">
 			<i class="fa-solid text-tertiary fa-filter justify-content-center align-self-center fa-xl"></i>
-			<select name="filter" class="form-select" style="width: 15rem;" id="filter">">
-				<option value="all" selected>All</option>
-				<option value="upload">Uploaded anime</option>
-				<option value="list">Anime in your list</option>
-			</select>
+			<?php if (isset($_SESSION['login'])) {
+				echo "<select name='filter' class='form-select' style='width: 15rem;' id='filter'>
+				<option value='all' selected>All</option>
+				<option value='upload'>Uploaded anime</option>
+				<option value='list'>Anime in your list</option>
+			</select>";
+			} else {
+				"<select name='filter' class='form-select' style='width: 15rem;' id='filter'>
+					<option value='all' selected>All</option>
+				</select>";
+			}
+			?>
+
 
 
 			<input class="d-none" id="gedit" value="<?php echo $genre; ?>">

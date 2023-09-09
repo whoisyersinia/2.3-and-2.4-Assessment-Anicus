@@ -32,6 +32,7 @@
 
 				<?php
 				if (isset($_SESSION['login'])) {
+					echo "<p class='pt-3 pe-3 fw-bold text-primary'>$_SESSION[username]</p>";
 					echo "<div class='navbar navbar-nav d-flex align-items-center justify-content-center pe-4'>
 					<button type='button' class='nav-item btn btn-tertiary navbar-btn btn-sm text-capitalize text-white'id='btn_logout' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #000000;'>Logout</button> </div>";
 				} else {
