@@ -32,9 +32,17 @@
 
 				<?php
 				if (isset($_SESSION['login'])) {
-					echo "<p class='pt-3 pe-3 fw-bold text-primary'>$_SESSION[username]</p>";
-					echo "<div class='navbar navbar-nav d-flex align-items-center justify-content-center pe-4'>
-					<button type='button' class='nav-item btn btn-tertiary navbar-btn btn-sm text-capitalize text-white'id='btn_logout' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #000000;'>Logout</button> </div>";
+					$userid = $_SESSION['iduser'];
+					$url = "animelist.php?id=$userid";
+					$windowloc = "window.location.href=";
+					$onclick = $windowloc . "\"$url\"";
+
+
+					echo "<p class='pt-3 pe-3 fw-bold text-primary'><i class='fa-solid fa-user pe-2'></i>$_SESSION[username]</p>";
+					echo "<div class='navbar navbar-nav d-flex align-items-center justify-content-center pe-3'>
+					<button type='button' class='nav-item btn btn-primary border-black navbar-btn btn-sm text-capitalize text-white' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #000000;' onclick='$onclick'>Your List</button> </div>
+					
+					<button type='button' class='nav-item btn btn-tertiary navbar-btn btn-sm text-capitalize text-white me-2'id='btn_logout' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #000000;'>Logout</button> </div>";
 				} else {
 					echo "<div class='navbar navbar-nav d-flex align-items-center justify-content-center pe-4'>
 					<button type='button' class='nav-item btn navbar-btn btn-sm text-primary' id='btn_login' style='--bs-btn-padding-y: 0.5rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 0.8rem; border-radius: 25px; border-color: #2b0806;'>Sign In</button>

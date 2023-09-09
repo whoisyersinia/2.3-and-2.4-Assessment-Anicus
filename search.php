@@ -16,6 +16,7 @@ if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
 }
 
 $query = $_GET['searchterm'];
+$query = mysqli_escape_string($conn, $query);
 
 // to calculate how many records there are for pagination 
 
@@ -120,19 +121,27 @@ while ($row = mysqli_fetch_array($r)) {
 	}
 
 	$id = $row['idanime'];
-	$iduser = $row['iduser'];
-
-
+	$iduser = $row["iduser"];
 
 	//links for redirect
 	$url = "infoanime.php?id=$id";
 	$windowloc = "window.location.href=";
 	$onclick = $windowloc . "\"$url\"";
+	$aurl = "list.php?id=$id";
+
+	$aonclick = $windowloc . "\"$aurl\"";
+
+	$durl = "list.php?id=$id&a=delete";
+	$donclick = $windowloc . "\"$durl\"";
 
 
 	//push the card to an array 
 	if (isset($_SESSION['login'])) {
-		if ($iduser === $userid) {
+		//check if user already has this anime on their list
+		$q = "SELECT * FROM `anime_list` WHERE (`anime_idanime` = $id) AND (`user_iduser` = $userid)";
+		$result = mysqli_query($conn, $q);
+
+		if (mysqli_num_rows($result) == 1) {
 			array_push(
 				$animeresult,
 				"<div class='col d-flex justify-content-start align-self-start'>
@@ -144,28 +153,8 @@ while ($row = mysqli_fetch_array($r)) {
 											<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
 											<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
 											<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
-											<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
-												<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'><i class='fa-solid fa-pencil pe-2'></i>Edit / Read More</button>
-											</div>
-										</div>
-									</div>
-									</div>
-								"
-			);
-		} else {
-			array_push(
-				$animeresult,
-				"<div class='col d-flex justify-content-start align-self-start'>
-									<div class='card' style='width: 18rem;'>
-										<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
-										<div class='card-body mx-1'>
-											<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
-											<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
-											<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
-											<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
-											<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
-											<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
-												<button type='button' class='btn btn-success btn-sm border-black text-white'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>
+											<div class='pt-2 pb-2 gap-2 d-flex justify-content-start align-content-start'>
+												<button type='button' class='btn btn-warning btn-sm border-black text-white' onclick='$donclick'> <i class='fa-solid fa-trash-can pe-2'></i></i>Remove from list</button>
 												<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'>Read More</button>
 											</div>
 										</div>
@@ -173,6 +162,49 @@ while ($row = mysqli_fetch_array($r)) {
 									</div>
 								"
 			);
+		} else {
+			if ($iduser === $userid) {
+				array_push(
+					$animeresult,
+					"<div class='col d-flex justify-content-start align-self-start'>
+												<div class='card' style='width: 18rem;'>
+													<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+													<div class='card-body mx-1'>
+														<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+														<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+														<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+														<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+														<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+														<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
+															<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'><i class='fa-solid fa-pencil pe-2'></i>Edit / Read More</button>
+														</div>
+													</div>
+												</div>
+												</div>
+											"
+				);
+			} else {
+				array_push(
+					$animeresult,
+					"<div class='col d-flex justify-content-start align-self-start'>
+												<div class='card' style='width: 18rem;'>
+													<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+													<div class='card-body mx-1'>
+														<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+														<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+														<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+														<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+														<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+														<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
+															<button type='button' class='btn btn-success btn-sm border-black text-white' onclick='$aonclick'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>
+															<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'>Read More</button>
+														</div>
+													</div>
+												</div>
+												</div>
+											"
+				);
+			}
 		}
 	} else {
 		array_push(
@@ -187,7 +219,7 @@ while ($row = mysqli_fetch_array($r)) {
 										<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
 										<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
 										<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
-											<button type='button' class='btn btn-success btn-sm border-black text-white'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>
+											<button type='button' class='btn btn-success btn-sm border-black text-white' onclick='$aonclick'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>
 											<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'>Read More</button>
 										</div>
 									</div>
@@ -197,6 +229,8 @@ while ($row = mysqli_fetch_array($r)) {
 		);
 	}
 }
+
+
 
 echo "<title>Search Results</title>";
 
@@ -261,7 +295,7 @@ $url = basename($_SERVER['PHP_SELF']) . '?' . http_build_query($params);
 	</form>
 
 	<?php
-	echo "<p class='pt-0 mt-0 px-5'>$total_records result(s) found, showing $result_count results</p>";
+	echo "<p class='pt-0 mt-0 px-5'>$total_records result(s) found, showing $result_count result(s).</p>";
 	echo "<p class='px-5 fw-bold'>Page $page_no of $total_no_of_pages</p>";
 
 	?>

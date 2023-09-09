@@ -76,7 +76,21 @@ session_start();
 					<h1 class="fw-bold main-text start_fade-left">List<span class="period">.</span></h1>
 				</div>
 				<div class="px-4 my-5 content">
-					<button type="button" class="btn btn-primary btn-rounded btn-lg px-4" style="--bs-btn-padding-y: 0.75rem; --bs-btn-padding-x: 2rem; --bs-btn-font-size: 0.9rem; border-radius: 25px; border-color: #2b0806;" id="sign_up"> Start Listing Now</button>
+					<?php
+					if (isset($_SESSION['login'])) {
+						$userid = $_SESSION['iduser'];
+						$url = "animelist.php?id=$userid";
+						$windowloc = "window.location.href=";
+						$onclick = $windowloc . "\"$url\"";
+
+						echo "<button type='button' class='btn btn-primary btn-rounded btn-lg px-4' style='--bs-btn-padding-y: 0.75rem; --bs-btn-padding-x: 2rem; --bs-btn-font-size: 0.9rem; border-radius: 25px; border-color: #2b0806;' id='sign_up' onclick='$onclick'>View your list</button>";
+					} else {
+						$loginurl = "login.php?s=req";
+						$windowloc = "window.location.href=";
+						$login = $windowloc . "\"$loginurl\"";
+						echo "<button type='button' class='btn btn-primary btn-rounded btn-lg px-4' style='--bs-btn-padding-y: 0.75rem; --bs-btn-padding-x: 2rem; --bs-btn-font-size: 0.9rem; border-radius: 25px; border-color: #2b0806;' id='sign_up' onclick='$login'>Start Listing Now</button>";
+					}
+					?>
 				</div>
 
 			</main>

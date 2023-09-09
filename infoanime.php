@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
 
 	if (mysqli_num_rows($r) == 0) {
 		http_response_code(404);
-		include('404.php');
+		header("Location: /anicus/errordocs/404.html");
 		die();
 	}
 
@@ -51,11 +51,16 @@ if (isset($_GET['id'])) {
 
 	//create delete url
 	$id = $_GET['id'];
+	$userid = $_SESSION['iduser'];
+
 	$durl = "deleteanime.php?id=$id";
 	$eurl = "editanime.php?id=$id";
+	$aurl = "list.php?id=$id";
+
 
 	$donclick = "\"$durl\"";
 	$eonclick = "\"$eurl\"";
+	$aonclick = "\"$aurl\"";
 } else {
 	ob_end_clean();
 	header("Location: index.php");
@@ -91,7 +96,7 @@ echo "<title>$t</title>"
 				echo "	<button type='button' class='btn btn-danger btn-sm border-black text-white p-2' onclick='window.location.href=$eonclick'><i class='fa-solid fa-pencil pe-2'></i>Edit</button>";
 				echo "<button type='button' class='btn btn-warning btn-sm border-black text-white p-2 mx-2' onclick='window.location.href=$donclick'> <i class='fa-solid fa-trash-can pe-2'></i></i>Delete</button>";
 			} else {
-				echo "<button type='button' class='btn btn-success btn-sm border-black text-white p-2' onclick='$onclick'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>";
+				echo "<button type='button' class='btn btn-success btn-sm border-black text-white p-2' onclick='window.location.href=$aonclick'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>";
 			}
 			?>
 
