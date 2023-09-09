@@ -10,64 +10,87 @@ ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
 
+if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
+	$page_no = $_GET['page_no'];
+} else {
+	$page_no = 1;
+}
 
 
-if (isset($_POST['search'])) {
-	$searchtitle = $_POST['searchterm'];
-	// $req_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-	// $q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%')";
-	// $r = mysqli_query($conn, $q);
-	// $row = mysqli_fetch_row($r);
-	// $page = $row[0];
+$query = $_GET['searchterm'];
 
-
-	// $amount = 20;
-	// $page_count = ceil($page / $amount);
-
-	// $first_product_shown = ($req_page - 1) * $amount;
-
-	// echo '<p>';
-	// for ($i = 1; $i <= $page_count; $i++) {
-	// 	if ($i == $req_page) {
-	// 		echo $i;
-	// 	} else {
-	// 		echo '<a href="/products/samsung/' . $i . '">' . $i . '</a> ';
-	// 	}
-	// }
-
-
-
-
-	if (isset($_POST['filter'])) {
-		$filter = $_POST['filter'];
+// to calculate how many records there are for pagination 
+if (isset($_GET['filter'])) {
+	$filter = $_GET['filter'];
+	$iduser = $_SESSION['iduser'];
+	if ($filter === "upload") {
 		$iduser = $_SESSION['iduser'];
-		if ($filter === "upload") {
-			$iduser = $_SESSION['iduser'];
-			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`iduser` = $iduser) LIMIT $page, $amount";
-			if (isset($_POST['genre'])) {
-				$genre = implode(', ', $_POST['genre']);
-				$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`genre` LIKE '%$genre%') AND (`iduser` = $iduser) LIMIT $page, $amount";
-			}
-		} else {
-			if (isset($_POST['genre'])) {
-				$genre = implode(', ', $_POST['genre']);
-				$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`genre` LIKE '%$genre%') LIMIT $page, $amount";
-			} else {
-				$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') ";
-			}
+		$q = "SELECT COUNT(*) As total_records  FROM `anime` WHERE (`title` LIKE '%$query%') AND (`iduser` = $iduser) ";
+		if (isset($_GET['genre'])) {
+			$genre = implode(', ', $_GET['genre']);
+			$q = "SELECT COUNT(*) As total_records  FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%') AND (`iduser` = $iduser )";
 		}
 	} else {
-		if (isset($_POST['genre'])) {
-			$genre = implode(', ', $_POST['genre']);
-			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%') AND (`genre` LIKE '%$genre%') LIMIT $page, $amount";
+		if (isset($_GET['genre'])) {
+			$genre = implode(', ', $_GET['genre']);
+			$q = "SELECT COUNT(*) As total_records FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%') ";
 		} else {
-			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$searchtitle%' ) LIMIT $page, $amount ";
+			$q = "SELECT COUNT(*) As total_records  FROM `anime` WHERE (`title` LIKE '%$query%') ";
 		}
 	}
-
-
-	$r = mysqli_query($conn, $q);
+} else {
+	if (isset($_GET['genre'])) {
+		$genre = implode(', ', $_GET['genre']);
+		$q = "SELECT COUNT(*) As total_records  FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%')";
+	} else {
+		$q = "SELECT COUNT(*) As total_records  FROM `anime` WHERE (`title` LIKE '%$query%')";
+	}
 }
+
+
+// pagination only allowing 20 results per page
+$total_result_per_page = 12;
+$offset = ($page_no - 1) * $total_result_per_page;
+$previous_page = $page_no - 1;
+$next_page = $page_no + 1;
+$adjacents = "2";
+
+$result_count = mysqli_query($conn, $q);
+$total_records = mysqli_fetch_array($result_count);
+$total_records = $total_records['total_records'];
+$total_no_of_pages = ceil($total_records / $total_result_per_page);
+$second_last = $total_no_of_pages - 1;
+
+// pagination query with limit selector in sql query
+if (isset($_GET['filter'])) {
+	$filter = $_GET['filter'];
+	$iduser = $_SESSION['iduser'];
+	if ($filter === "upload") {
+		$iduser = $_SESSION['iduser'];
+		$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$query%') AND (`iduser` = $iduser) LIMIT $offset, $total_result_per_page ";
+		if (isset($_GET['genre'])) {
+			$genre = implode(', ', $_GET['genre']);
+			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%') AND (`iduser` = $iduser) LIMIT $offset, $total_result_per_page";
+		}
+	} else {
+		if (isset($_GET['genre'])) {
+			$genre = implode(', ', $_GET['genre']);
+			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%')  LIMIT $offset, $total_result_per_page";
+		} else {
+			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$query%') LIMIT $offset, $total_result_per_page";
+		}
+	}
+} else {
+	if (isset($_GET['genre'])) {
+		$genre = implode(', ', $_GET['genre']);
+		$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%') LIMIT $offset, $total_result_per_page ";
+	} else {
+		$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$query%') LIMIT $offset, $total_result_per_page";
+	}
+}
+
+
+$r = mysqli_query($conn, $q);
 
 if (mysqli_num_rows($r) == 0) {
 	$msg = "<h1 class='px-5'>Sorry, no results found!</h1>";
@@ -77,7 +100,7 @@ $result_count = 0;
 $animeresult = array();
 
 while ($row = mysqli_fetch_array($r)) {
-	$msg = "<h1 class='fs-1 px-5'>Here's what we found for $searchtitle. </h1>";
+	$msg = "<h1 class='fs-1 px-5'>Here's what we found for $query. </h1>";
 	$result_count += 1;
 
 	if (!empty($row['date_aired'])) {
@@ -124,7 +147,8 @@ while ($row = mysqli_fetch_array($r)) {
 	);
 }
 
-echo "<title>Search - $searchtitle </title>";
+echo "<title>Search Results</title>";
+
 ?>
 
 <body class="flex-column min-vh-100 mt-5 pt-5 ">
@@ -132,7 +156,7 @@ echo "<title>Search - $searchtitle </title>";
 	<?php
 	echo $msg;
 	?>
-	<form action="search.php" method="POST">
+	<form action="search.php" method="GET">
 		<div class=" d-inline-flex gap-2 container-fluid">
 			<i class="fa-solid text-tertiary fa-filter justify-content-center align-self-center fa-xl"></i>
 			<select name="filter" class="form-select" style="width: 15rem;" id="filter">">
@@ -161,7 +185,7 @@ echo "<title>Search - $searchtitle </title>";
 			</select>
 
 
-			<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" value="<?php if (isset($_POST['searchterm'])) echo $_POST['searchterm']; ?>">
+			<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" value="<?php if (isset($_GET['searchterm'])) echo $_GET['searchterm']; ?>">
 			<button class="btn btn-outline-primary " type="submit" name="search">Search</button>
 		</div>
 		<div class="d-inline-flex gap-2 mx-3">
@@ -170,9 +194,11 @@ echo "<title>Search - $searchtitle </title>";
 	</form>
 
 	<?php
-	echo "<p class='pt-2 px-5'>$result_count result(s) </p>";
+	echo "<p class='pt-0 mt-0 px-5'>$total_records result(s) found, showing $result_count results</p>";
+	echo "<p class='px-5 fw-bold'>Page $page_no of $total_no_of_pages</p>";
 
 	?>
+
 	<hr>
 	<div class='container-fluid pt-3 mb-5 px-5'>
 		<div class='row row-cols-sm-1 row-cols-lg-4 row-cols-md-2 d-flex g-5 align-items-sm-start justify-content-sm-start p-0'>
@@ -185,6 +211,35 @@ echo "<title>Search - $searchtitle </title>";
 			?>
 		</div>
 	</div>
+	<nav aria-label="Page navigation example">
+		<ul class="pagination justify-content-center">
+			<li <?php if ($page_no <= 1) {
+						echo "class='page-item disabled'";
+					} else echo  "class='page-item'" ?>>
+				<a <?php if ($page_no > 1) {
+							echo "href='?page_no=$previous_page'";
+						} ?> class="page-link">Previous</a>
+			</li>
+			<?php
+			if ($total_no_of_pages <= 10) {
+				for ($counter = 1; $counter <= $total_no_of_pages; $counter++) {
+					if ($counter == $page_no) {
+						echo "<li class='page-item active'><a class='page-link'>$counter</a></li>";
+					} else {
+						echo " <li class='page-item '><a class='page-link'href='?page_no=$counter'>$counter</a></li>";
+					}
+				}
+			} ?>
+
+			<li <?php if ($page_no >= $total_no_of_pages) {
+						echo "class='page-item disabled'";
+					} else echo  "class='page-item'" ?>>
+				<a <?php if ($page_no < $total_no_of_pages) {
+							echo "href='?page_no=$next_page'";
+						} ?> class="page-link">Next</a>
+			</li>
+		</ul>
+	</nav>
 
 </body>
 
