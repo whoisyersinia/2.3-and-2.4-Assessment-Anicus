@@ -17,6 +17,7 @@ if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
 }
 
 
+
 $query = $_GET['searchterm'];
 
 // to calculate how many records there are for pagination 
@@ -149,6 +150,20 @@ while ($row = mysqli_fetch_array($r)) {
 
 echo "<title>Search Results</title>";
 
+// to include get attributes/variables into pagination
+foreach ($_GET as $key => $value) {;
+}
+
+function addOrUpdateUrlParam($key, $value)
+{
+	$params = $_GET;
+	unset($params[$key]);
+	$params[$key] = $value;
+	return basename($_SERVER['PHP_SELF']) . '?' . http_build_query($params);
+}
+
+
+$url = addOrUpdateUrlParam($key, $value);
 ?>
 
 <body class="flex-column min-vh-100 mt-5 pt-5 ">
@@ -211,13 +226,17 @@ echo "<title>Search Results</title>";
 			?>
 		</div>
 	</div>
+
+	<!-- PAGINATION NAV LINKS-->
+	<!-- Dynamic depending on which page you're on if your page 2 then the number saying 2 would be coloured and the user cannot use the link-->
+
 	<nav aria-label="Page navigation example">
 		<ul class="pagination justify-content-center">
 			<li <?php if ($page_no <= 1) {
 						echo "class='page-item disabled'";
 					} else echo  "class='page-item'" ?>>
 				<a <?php if ($page_no > 1) {
-							echo "href='?page_no=$previous_page'";
+							echo "href='$url&page_no=$previous_page'";
 						} ?> class="page-link">Previous</a>
 			</li>
 			<?php
@@ -226,7 +245,7 @@ echo "<title>Search Results</title>";
 					if ($counter == $page_no) {
 						echo "<li class='page-item active'><a class='page-link'>$counter</a></li>";
 					} else {
-						echo " <li class='page-item '><a class='page-link'href='?page_no=$counter'>$counter</a></li>";
+						echo " <li class='page-item '><a class='page-link'href='$url&page_no=$counter'>$counter</a></li>";
 					}
 				}
 			} ?>
@@ -235,7 +254,7 @@ echo "<title>Search Results</title>";
 						echo "class='page-item disabled'";
 					} else echo  "class='page-item'" ?>>
 				<a <?php if ($page_no < $total_no_of_pages) {
-							echo "href='?page_no=$next_page'";
+							echo "href='$url&page_no=$next_page'";
 						} ?> class="page-link">Next</a>
 			</li>
 		</ul>
