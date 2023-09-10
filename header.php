@@ -26,7 +26,7 @@
 						<a class="nav-link text-primary fw-normal" href="anime.php">Anime</a>
 					</li>
 					<li class="nav-item px-3">
-						<a class="nav-link text-primary fw-normal" href="">Lists</a>
+						<a class="nav-link text-primary fw-normal" href="listsearch.php">Lists</a>
 					</li>
 				</ul>
 

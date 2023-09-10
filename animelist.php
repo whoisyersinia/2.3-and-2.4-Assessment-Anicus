@@ -128,7 +128,12 @@ if (!isset($_SESSION['login'])) {
 					"<tr>
 					<th>$count</th>
 					<th><img src='./images/bg-4.png' alt='img'  width='100px'></th>
-					<th>$title  <div class='d-inline-flex'><a class='d-flex justify-content-end align-content-end px-1' style='font-size:0.8rem' href='list.php?id=$animeid&a=delete'>Remove</a><a class='d-flex justify-content-end align-content-end px-1' style='font-size:0.8rem' href='editanime.php?id=$animeid'>Edit</a></div> </th> 
+					<th><a class='a-link text-primary pe-2' href='infoanime.php?id=$animeid'>$title</a>
+					<div class='d-inline-flex'>
+					<a class='d-flex justify-content-end align-content-end px-2' style='font-size:0.8rem' href='list.php?id=$animeid&a=delete'>Remove</a>
+					<a class='d-flex justify-content-end align-content-end px-1' style='font-size:0.8rem' href='editanime.php?id=$animeid'>Edit</a>
+					</div> 
+					</th> 
 					<th><a class='text-white' href='rating.php?id=$animeid&userid=$id'>$rating<a></th>
 					<th>$genre</th>
 	
@@ -142,7 +147,7 @@ if (!isset($_SESSION['login'])) {
 					"<tr>
 					<th>$count</th>
 					<th><img src='./images/bg-4.png' alt='img'  width='100px'></th>
-					<th>$title  <div class='d-inline-flex'><a class='d-flex justify-content-end align-content-end' style='font-size:0.8rem' href='list.php?id=$animeid&a=delete'>Remove</a></div> </th> 
+					<th><a class='a-link text-primary pe-2' href='infoanime.php?id=$animeid'>$title</a><div class='d-inline-flex'><a class='d-flex justify-content-end align-content-end' style='font-size:0.8rem' href='list.php?id=$animeid&a=delete'>Remove</a></div> </th> 
 					<th><a class='text-white' href='rating.php?id=$animeid&userid=$id'>$rating<a></th>
 					<th>$genre</th>
 	
@@ -177,17 +182,19 @@ echo "<title>Your list</title>"
 
 		</div>
 
+
+		<div class="row text-center">
+			<?php if (isset($msg)) echo $msg; ?>
+		</div>
 		<div class="row">
 			<div class="d-flex justify-content-center align-content-center mx-auto">
 				<form class="d-inline-flex pb-4" action="search.php" method="GET">
 					<button type='button' class='btn btn-danger btn-sm border-black text-white p-2 px-3 me-3 w-100' onclick="window.location.href='addanime.php'"><i class='fa-solid fa-plus pe-2'></i>Add anime</button>
+					<button type='button' class='btn btn-info btn-sm border-black text-primary p-2 px-3 me-3 w-100' onclick="window.location.href='anime.php'"><i class="fa-solid fa-eye pe-2"></i>View all anime</button>
 					<input class="form-control me-2" type="search" placeholder="Search anime" aria-label="Search" name="searchterm" required>
 					<button class="btn btn-outline-primary" type="submit" name="search">Search</button>
 				</form>
 			</div>
-		</div>
-		<div class="row text-center">
-			<?php if (isset($msg)) echo $msg; ?>
 		</div>
 		<?php
 		if ($res === True) {

@@ -352,7 +352,7 @@ $url = basename($_SERVER['PHP_SELF']) . '?' . http_build_query($params);
 	<!-- PAGINATION NAV LINKS-->
 	<!-- Dynamic depending on which page you're on if your page 2 then the number saying 2 would be coloured and the user cannot use the link-->
 
-	<nav aria-label="Page navigation example">
+	<nav>
 		<ul class="pagination justify-content-center">
 			<li <?php if ($page_no <= 1) {
 						echo "class='page-item disabled'";

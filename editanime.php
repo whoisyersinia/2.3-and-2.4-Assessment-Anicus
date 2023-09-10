@@ -73,11 +73,9 @@ if (isset($_GET['id'])) {
 		} else {
 
 			$title = preg_replace('/\s+/', ' ', $_POST['title']);
-			$re = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{2,}$/';
-			$re2 = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{2,255}$/';
 
-			if (preg_match($re, $title)) {
-				if (preg_match($re2, $title)) {
+			if (strlen($title) > 2) {
+				if (strlen($title) < 255) {
 					$t = mysqli_real_escape_string($conn, $title);
 				} else {
 					array_push($errors, "Your title exceeds the chracter limit (255)!");
@@ -85,6 +83,7 @@ if (isset($_GET['id'])) {
 			} else {
 				array_push($errors, "Your title is less than 2 characters long!");
 			}
+
 
 			if (isset($_POST['genre'])) {
 				$genre = implode(', ', $_POST['genre']);
@@ -115,12 +114,11 @@ if (isset($_GET['id'])) {
 
 			$synopsis = preg_replace('/\s+/', ' ', $_POST['synopsis']);
 
-			$re3 = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{0,255}$/';
 			if (!empty($synopsis)) {
-				if (preg_match($re3, $synopsis)) {
-					$sy = mysqli_real_escape_string($conn, $synopsis);
+				if (strlen($synopsis) > 5000) {
+					array_push($errors, "Your synopsis is more than 5000 characters!");
 				} else {
-					array_push($errors, "Your synopsis is more than 255 characters!");
+					$sy = mysqli_real_escape_string($conn, $synopsis);
 				}
 			} else {
 				$sy = NULL;
@@ -261,7 +259,7 @@ if ($errors) {
 																																																																								echo $_POST['synopsis'];
 																																																																							}; ?></textarea>
 							<label for=" floatingSynopsis">Synopsis</label>
-							<div id="synopsisHelp" class="form-text text-light">Include the general plot of the series, <span class="fw-bold text-warning">without any spoilers!</span> (Max: 255 characters)</div>
+							<div id="synopsisHelp" class="form-text text-light">Include the general plot of the series, <span class="fw-bold text-warning">without any spoilers!</span> (Max: 5000 characters)</div>
 						</div>
 					</div>
 				</div>

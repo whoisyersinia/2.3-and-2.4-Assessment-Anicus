@@ -1,6 +1,13 @@
 <?php
 require_once("./includes/connectlocal.inc");
 require_once('./includes/basehead.html');
+require_once('header.php');
+
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+
 
 if (!empty($_GET['s'])) {
 	if ($_GET['s'] === "add") {
@@ -43,17 +50,263 @@ if (!empty($_GET['s'])) {
 	}
 }
 
-require_once('header.php');
+
+if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
+	$page_no = $_GET['page_no'];
+} else {
+	$page_no = 1;
+}
+
+
+$q = "SELECT COUNT(*) As total_records FROM `anime`";
+
+// pagination only allowing 20 results per page
+$total_result_per_page = 12;
+$offset = ($page_no - 1) * $total_result_per_page;
+$previous_page = $page_no - 1;
+$next_page = $page_no + 1;
+$adjacents = "2";
+
+$result_count = mysqli_query($conn, $q);
+$total_records = mysqli_fetch_array($result_count);
+$total_records = $total_records['total_records'];
+$total_no_of_pages = ceil($total_records / $total_result_per_page);
+$second_last = $total_no_of_pages - 1;
+
+// pagination query with limit selector in sql query
+
+$q = "SELECT * FROM `anime` LIMIT $offset, $total_result_per_page";
+
+
+$r = mysqli_query($conn, $q);
+
+// count how many results are there
+$result_count = 0;
+$animeresult = array();
+if (isset($_SESSION['login'])) {
+	$userid = $_SESSION['iduser'];
+}
+
+while ($row = mysqli_fetch_array($r)) {
+	$result_count += 1;
+
+	if (!empty($row['date_aired'])) {
+		$da = $row['date_aired'];
+		$date = new DateTime($da);
+		$da = $date->format('jS \o\f F Y');
+	} else {
+		$da = "Unknown";
+	}
+	if (!empty($row['synopsis'])) {
+		$sy = $row['synopsis'];
+	} else {
+		$sy = "No synopsis found.";
+	}
+
+	$id = $row['idanime'];
+	$iduser = $row["iduser"];
+
+	//links for redirect
+	$url = "infoanime.php?id=$id";
+	$windowloc = "window.location.href=";
+	$onclick = $windowloc . "\"$url\"";
+	$aurl = "list.php?id=$id";
+
+	$aonclick = $windowloc . "\"$aurl\"";
+
+	$durl = "list.php?id=$id&a=delete";
+	$donclick = $windowloc . "\"$durl\"";
+
+
+	//push the card to an array 
+	if (isset($_SESSION['login'])) {
+		//check if user already has this anime on their list
+		$q = "SELECT * FROM `anime_list` WHERE (`anime_idanime` = $id) AND (`user_iduser` = $userid)";
+		$result = mysqli_query($conn, $q);
+
+		if (mysqli_num_rows($result) == 1) {
+			if ($iduser === $userid) {
+				array_push(
+					$animeresult,
+					"<div class='col d-flex justify-content-start align-self-start'>
+								<div class='card' style='width: 18rem;'>
+									<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+									<div class='card-body mx-1'>
+										<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+										<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+										<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+										<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+										<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+										<div class='pt-2 pb-2 gap-1 d-flex justify-content-start align-content-start'>
+											<button type='button' class='btn btn-warning btn-sm border-black text-white' style='font-size:0.7rem' onclick='$donclick'> <i class='fa-solid fa-trash-can pe-2'></i></i>Remove from list</button>
+											<button type='button' class='btn btn-info btn-sm border-black' style='font-size:0.7rem' onclick='$onclick'><i class='fa-solid fa-pencil pe-1'></i>Edit/Read More</button>
+										</div>
+									</div>
+								</div>
+								</div>
+							"
+				);
+			} else {
+				array_push(
+					$animeresult,
+					"<div class='col d-flex justify-content-start align-self-start'>
+								<div class='card' style='width: 18rem;'>
+									<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+									<div class='card-body mx-1'>
+										<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+										<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+										<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+										<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+										<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+										<div class='pt-2 pb-2 gap-2 d-flex justify-content-start align-content-start'>
+											<button type='button' class='btn btn-warning btn-sm border-black text-white' onclick='$donclick'> <i class='fa-solid fa-trash-can pe-2'></i></i>Remove from list</button>
+											<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'>Read More</button>
+										</div>
+									</div>
+								</div>
+								</div>
+							"
+				);
+			}
+		} else {
+			if ($iduser === $userid) {
+				array_push(
+					$animeresult,
+					"<div class='col d-flex justify-content-start align-self-start'>
+											<div class='card' style='width: 18rem;'>
+												<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+												<div class='card-body mx-1'>
+													<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+													<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+													<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+													<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+													<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+													<div class='pt-2 pb-2 d-flex gap-2 justify-content-start align-content-start'>
+														<button type='button' class='btn btn-success btn-sm border-black text-white' onclick='$aonclick'> <i class='fa-solid fa-plus'></i>Add to list</button>
+														<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'><i class='fa-solid fa-pencil pe-1'></i>Edit/Read More</button>
+														</div>
+												</div>
+											</div>
+											</div>
+										"
+				);
+			} else {
+				array_push(
+					$animeresult,
+					"<div class='col d-flex justify-content-start align-self-start'>
+											<div class='card' style='width: 18rem;'>
+												<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+												<div class='card-body mx-1'>
+													<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+													<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+													<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+													<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+													<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+													<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
+														<button type='button' class='btn btn-success btn-sm border-black text-white' onclick='$aonclick'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>
+														<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'>Read More</button>
+													</div>
+												</div>
+											</div>
+											</div>
+										"
+				);
+			}
+		}
+	} else {
+		array_push(
+			$animeresult,
+			"<div class='col d-flex justify-content-start align-self-start'>
+							<div class='card' style='width: 18rem;'>
+								<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+								<div class='card-body mx-1'>
+									<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+									<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+									<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+									<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+									<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+									<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
+										<button type='button' class='btn btn-success btn-sm border-black text-white' onclick='$aonclick'> <i class='fa-solid fa-plus pe-2'></i>Add to list</button>
+										<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'>Read More</button>
+									</div>
+								</div>
+							</div>
+							</div>
+						"
+		);
+	}
+	$params = $_GET;
+	array_pop($params);
+	$url = basename($_SERVER['PHP_SELF']) . '?' . http_build_query($params);
+}
+
+
 ?>
 <title>Anime</title>
 
 <body class="mt-5 pt-5">
-	<button type='button' class='btn btn-danger btn-sm border-black text-white p-2 px-3 me-3 ' onclick="window.location.href='addanime.php'"><i class='fa-solid fa-plus pe-2'></i>Add anime</button>
+	<div class="d-flex justify-content-center align-content-center mx-auto">
 
-	<form class="mx-auto pt-2" action="search.php" method="GET">
-		<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" value="<?php if (isset($_GET['searchterm'])) echo $_GET['searchterm']; ?>" required>
-		<button class="btn btn-outline-primary" type="submit" name="search">Search</button>
-	</form>
+		<form class="d-inline-flex pb-4" action="search.php" method="GET">
+			<button type='button' class='btn btn-danger btn-sm border-black text-white p-2 px-3 me-3 w-100' onclick="window.location.href='addanime.php'"><i class='fa-solid fa-plus pe-2'></i>Add anime</button>
+			<input class="form-control me-2" type="search" placeholder="Search anime" aria-label="Search" name="searchterm" required>
+			<button class="btn btn-outline-primary" type="submit" name="search">Search</button>
+		</form>
+	</div>
+
+
+
+	<hr>
+	<div class='container-fluid pt-3 mb-5 px-5'>
+		<h1 class='fs-1 pt-2'>View all the anime in our database.</h1>
+		<?php
+		echo "<p class='pt-0 mt-0'>$total_records result(s) found, showing $result_count result(s).</p>";
+		echo "<p class='fw-bold'>Page $page_no of $total_no_of_pages</p>";
+
+		?>
+		<div class='row row-cols-sm-1 row-cols-lg-4 row-cols-md-2 d-flex g-5 align-items-sm-start justify-content-sm-start p-0'>
+			<?php
+			if (isset($animeresult)) {
+				foreach ($animeresult as $anime) {
+					echo $anime;
+				};
+			}
+			?>
+		</div>
+	</div>
+
+	<!-- PAGINATION NAV LINKS-->
+	<!-- Dynamic depending on which page you're on if your page 2 then the number saying 2 would be coloured and the user cannot use the link-->
+
+	<nav class="text-primary">
+		<ul class="pagination justify-content-center">
+			<li <?php if ($page_no <= 1) {
+						echo "class='page-item disabled'";
+					} else echo  "class='page-item'" ?>>
+				<a <?php if ($page_no > 1) {
+							echo "href='$url&page_no=$previous_page'";
+						} ?> class="page-link">Previous</a>
+			</li>
+			<?php
+			if ($total_no_of_pages <= 10) {
+				for ($counter = 1; $counter <= $total_no_of_pages; $counter++) {
+					if ($counter == $page_no) {
+						echo "<li class='page-item active'><a class='page-link'>$counter</a></li>";
+					} else {
+						echo " <li class='page-item '><a class='page-link'href='$url&page_no=$counter'>$counter</a></li>";
+					}
+				}
+			} ?>
+
+			<li <?php if ($page_no >= $total_no_of_pages) {
+						echo "class='page-item disabled'";
+					} else echo  "class='page-item'" ?>>
+				<a <?php if ($page_no < $total_no_of_pages) {
+							echo "href='$url&page_no=$next_page'";
+						} ?> class="page-link">Next</a>
+			</li>
+		</ul>
+	</nav>
 </body>
 
 

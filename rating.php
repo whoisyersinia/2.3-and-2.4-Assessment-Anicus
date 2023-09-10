@@ -75,12 +75,12 @@ if (!isset($_SESSION['login'])) {
 
 
 				$re = preg_replace('/\s+/', ' ', $_POST['review']);
-				$re3 = '/^[\w~`!@#$%^&*()_+={[}|:;"\'<,>.?\' ]{0,255}$/';
+
 				if (!empty($re)) {
-					if (preg_match($re3, $re)) {
-						$re = mysqli_real_escape_string($conn, $re);
+					if (strlen($re) > 5000) {
+						array_push($errors, "Your review is more than 5000 characters!");
 					} else {
-						array_push($errors, "Your review is more than 255 characters!");
+						$sy = mysqli_real_escape_string($conn, $synopsis);
 					}
 				} else {
 					$re = NULL;
@@ -162,13 +162,13 @@ echo "<title>Rating</title>"
 																																																																							echo $_POST['review'];
 																																																																						}; ?></textarea>
 							<label for="floatingSynopsis">Review</label>
-							<div id="synopsisHelp" class="form-text text-light">Minimise <span class="fw-bold text-warning">spoilers!</span> (Max: 255 characters)</div>
+							<div id="synopsisHelp" class="form-text text-light">Minimise <span class="fw-bold text-warning">spoilers!</span> (Max: 5000 characters)</div>
 						</div>
 					</div>
 				</div>
 
 				<div class="mt-3 d-flex justify-content-center align-content-center gap-3">
-					<button class="btn btn-lg btn-tertiary text-white border-primary" type="button" onclick="window.location.href='animelist.php?id=<?php $userid ?>'">Cancel</button>
+					<button class="btn btn-lg btn-tertiary text-white border-primary" type="button" onclick="window.location.href='infoanime.php?id=<?php echo $id ?>'">Cancel</button>
 
 					<button class="btn btn-lg btn-primary" type="submit" name="submit">Save Changes</button>
 				</div>

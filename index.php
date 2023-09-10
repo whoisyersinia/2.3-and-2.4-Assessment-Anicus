@@ -123,7 +123,7 @@ session_start();
 
 				<div class="d-inline-flex">
 					<i class="fa-solid fa-check pt-1 px-2"></i>
-					<a href="#" class="text-decoration-underline text-primary">
+					<a href="listsearch.php" class="text-decoration-underline text-primary">
 						<h5 class="text-muted">Check our 'Anime for Beginners Lists'</h5>
 					</a>
 				</div>
@@ -150,8 +150,24 @@ session_start();
 		<div class="row">
 			<div class="col-md-7 px-4">
 				<h2 class="fw-bold">Anime listing made easy <span class="text-muted text_effect">with us.</span></h2>
+				<h4 class="fs-4">Get familiar with our format.</h4>
+				<div class="d-flex justify-content-center align-content-center pt-sm-2 mt-auto">
+					<div class='card border-black border-2 ' style='width: 18rem;'>
+						<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+						<div class='card-body mx-1'>
+							<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>Best Anime Ever</h5>
+							<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-wrap'>Adventure, Fantasy</h6>
+							<h6 class='card-subtitle mb-2 text-wrap  text-wrap'>This is the best anime ever!!!!</h6>
+							<div class='pt-2 pb-2 d-flex gap-2 justify-content-start align-content-start'>
+								<button type='button' class='btn btn-success btn-sm border-black text-white disabled'> <i class='fa-solid fa-plus pe-2'></i>Add to list
+								</button>
+								<button type='button' class='btn btn-info btn-sm border-black disabled'>Read More</button>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="col-md-5">
+			<div class="col-md-5 pt-3">
 				<div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg hover-zoom card_img_2">
 					<div class="d-flex flex-column h-100 p-5 pb-3 mt-5 text-white text-shadow-1">
 						<ul class="d-flex list-unstyled mt-auto">
@@ -166,6 +182,27 @@ session_start();
 				</div>
 
 				</p>
+			</div>
+		</div>
+	</div>
+	<div class="row align-items-md-stretch py-5 mx-auto bg-dark overflow-hidden container-fluid">
+		<div class="col-md-6">
+			<div class="h-100 p-4 text-bg-dark rounded-3">
+				<h2>Listing with Anicus</h2>
+				<p>With Anicus you can track and even share your lists with your friends. Don't know what to watch next? Check our pre-made lists by our users and be inspired.</p>
+
+				<p>Whenever you see this button click it to view a list.</p>
+				<button type='button' class="btn btn-info mb-3 border-black disabled"><i class="fa-solid fa-eye pe-1"></i>View list</button>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="h-100 p-4 bg-secondary border rounded-3">
+				<h2>Reviewing with Anicus</h2>
+				<p>
+					Have an opinion? Share your opinion by adding your review plus a score out of 10 to any anime.
+				</p>
+				<p>Whenever you see this button click it to review.</p>
+				<button type='button' class='btn btn-dark border-black text-white disabled'><i class='fa-solid fa-star pe-2'></i>Review Anime</button>
 			</div>
 		</div>
 	</div>
