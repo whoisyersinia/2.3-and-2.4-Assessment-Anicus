@@ -3,7 +3,7 @@ include('./includes/basehead.html'); ?>
 
 
 <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top footer mt-auto bg-dark container-fluid m-0 pt-3">
-	<p class="col-md-4 mb-0 text-light">&copy; 2023 Anicus</p>
+	<p class="col-md-4 mb-0 text-light px-4">&copy; 2023 Anicus</p>
 
 	<a href="#t" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none pt-sm-4 pt-lg-0">
 		<img class="d-block" src="./images/cat_transparent.svg" height="100vh" alt="logo">

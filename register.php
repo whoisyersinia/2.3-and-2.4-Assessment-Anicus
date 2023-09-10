@@ -1,6 +1,6 @@
 <?php
 require_once('./includes/basehead.html');
-
+require_once('./includes/connectlocal.inc');
 
 if (isset($_POST['regi'])) {
 	$trimmed = array_map('trim', $_POST);

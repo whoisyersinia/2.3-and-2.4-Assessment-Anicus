@@ -48,7 +48,7 @@ require_once('header.php');
 <title>Anime</title>
 
 <body class="mt-5 pt-5">
-	<a href="addanime.php">Add anime</a>
+	<button type='button' class='btn btn-danger btn-sm border-black text-white p-2 px-3 me-3 ' onclick="window.location.href='addanime.php'"><i class='fa-solid fa-plus pe-2'></i>Add anime</button>
 
 	<form class="mx-auto pt-2" action="search.php" method="GET">
 		<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" value="<?php if (isset($_GET['searchterm'])) echo $_GET['searchterm']; ?>" required>

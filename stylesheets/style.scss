@@ -12,6 +12,18 @@ $theme-colors: (
   
 );
 
+$table-variants: (
+  'primary': #2b0806,
+  'secondary':#ffdbbd,
+	'tertiary': #ef5454,
+  'success': #32987d,
+  'info': #ADCAEB,
+  'warning': #9a031e,
+  'light': #f8f6f3,
+  'dark': #E5AA70,
+  'danger': #EFB07D,
+);
+
 $position-values: (
   0: 0,
   10: 10%,

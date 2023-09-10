@@ -15,8 +15,14 @@ if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
 	$page_no = 1;
 }
 
-$query = $_GET['searchterm'];
-$query = mysqli_escape_string($conn, $query);
+if (isset($_GET['searchterm'])) {
+	$query = $_GET['searchterm'];
+	$query = mysqli_escape_string($conn, $query);
+} else {
+	ob_end_clean();
+	header("Location: anime.php");
+	exit();
+}
 
 // to calculate how many records there are for pagination 
 
@@ -31,6 +37,8 @@ if (isset($_GET['filter'])) {
 			$genre = implode(', ', $_GET['genre']);
 			$q = "SELECT COUNT(*) As total_records  FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%') AND (`iduser` = $iduser )";
 		}
+	} elseif ($filter === "list") {
+		$q = "SELECT COUNT(*) As total_records FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime WHERE  (`title` LIKE '%$query%') AND (anime_list.user_iduser = $iduser)";
 	} else {
 		if (isset($_GET['genre'])) {
 			$genre = implode(', ', $_GET['genre']);
@@ -73,6 +81,8 @@ if (isset($_GET['filter'])) {
 			$genre = implode(', ', $_GET['genre']);
 			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%') AND (`iduser` = $iduser) LIMIT $offset, $total_result_per_page";
 		}
+	} elseif ($filter === "list") {
+		$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime WHERE (`title` LIKE '%$query%') AND (anime_list.user_iduser = $iduser) LIMIT $offset, $total_result_per_page";
 	} else {
 		if (isset($_GET['genre'])) {
 			$genre = implode(', ', $_GET['genre']);
@@ -94,7 +104,9 @@ if (isset($_GET['filter'])) {
 $r = mysqli_query($conn, $q);
 
 if (mysqli_num_rows($r) == 0) {
-	$msg = "<h1 class='px-5'>Sorry, no results found!</h1>";
+	$msg = "<h1 class='px-5'>Sorry, no results found!</h1><a class='px-5'href='addanime.php'>Add anime</a>
+
+	";
 }
 // count how many results are there
 $result_count = 0;
@@ -142,9 +154,31 @@ while ($row = mysqli_fetch_array($r)) {
 		$result = mysqli_query($conn, $q);
 
 		if (mysqli_num_rows($result) == 1) {
-			array_push(
-				$animeresult,
-				"<div class='col d-flex justify-content-start align-self-start'>
+			if ($iduser === $userid) {
+				array_push(
+					$animeresult,
+					"<div class='col d-flex justify-content-start align-self-start'>
+									<div class='card' style='width: 18rem;'>
+										<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
+										<div class='card-body mx-1'>
+											<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
+											<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
+											<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+											<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
+											<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
+											<div class='pt-2 pb-2 gap-1 d-flex justify-content-start align-content-start'>
+												<button type='button' class='btn btn-warning btn-sm border-black text-white' style='font-size:0.7rem' onclick='$donclick'> <i class='fa-solid fa-trash-can pe-2'></i></i>Remove from list</button>
+												<button type='button' class='btn btn-info btn-sm border-black' style='font-size:0.7rem' onclick='$onclick'><i class='fa-solid fa-pencil pe-1'></i>Edit/Read More</button>
+											</div>
+										</div>
+									</div>
+									</div>
+								"
+				);
+			} else {
+				array_push(
+					$animeresult,
+					"<div class='col d-flex justify-content-start align-self-start'>
 									<div class='card' style='width: 18rem;'>
 										<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>
 										<div class='card-body mx-1'>
@@ -161,7 +195,8 @@ while ($row = mysqli_fetch_array($r)) {
 									</div>
 									</div>
 								"
-			);
+				);
+			}
 		} else {
 			if ($iduser === $userid) {
 				array_push(
@@ -175,9 +210,10 @@ while ($row = mysqli_fetch_array($r)) {
 														<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
 														<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
 														<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
-														<div class='pt-2 pb-2 gap-3 d-flex justify-content-start align-content-start'>
-															<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'><i class='fa-solid fa-pencil pe-2'></i>Edit / Read More</button>
-														</div>
+														<div class='pt-2 pb-2 d-flex gap-2 justify-content-start align-content-start'>
+															<button type='button' class='btn btn-success btn-sm border-black text-white' onclick='$aonclick'> <i class='fa-solid fa-plus'></i>Add to list</button>
+															<button type='button' class='btn btn-info btn-sm border-black' onclick='$onclick'><i class='fa-solid fa-pencil pe-1'></i>Edit/Read More</button>
+															</div>
 													</div>
 												</div>
 												</div>

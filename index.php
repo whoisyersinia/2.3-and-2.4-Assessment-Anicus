@@ -128,8 +128,8 @@ session_start();
 					</a>
 				</div>
 				<!--SEARCH FORM-->
-				<form class="d-inline-flex pt-2" action="search.php" method="POST">
-					<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" value="<?php if (isset($_POST['searchterm'])) echo $_POST['searchterm']; ?>" required>
+				<form class="d-inline-flex pt-2" action="search.php" method="GET">
+					<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" required>
 					<button class="btn btn-outline-primary" type="submit" name="search">Search</button>
 				</form>
 			</div>
