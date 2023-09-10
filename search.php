@@ -25,7 +25,7 @@ if (isset($_GET['searchterm'])) {
 }
 
 // to calculate how many records there are for pagination 
-
+//different queries depending on filters 
 if (isset($_GET['filter'])) {
 	$filter = $_GET['filter'];
 

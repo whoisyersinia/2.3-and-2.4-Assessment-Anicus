@@ -58,6 +58,8 @@ if (!isset($_SESSION['login'])) {
 			$q = "INSERT into `anime_list` (`anime_idanime`, `user_iduser`) VALUES ('$id', '$userid')";
 			$r = mysqli_query($conn, $q);
 
+			$q = "INSERT into `reviews` (`anime_idanime`, `user_iduser`)  VALUES ('$id', '$userid')";
+
 			$url = "animelist.php?id=" . $userid . "&s=add";
 			header("Location: $url");
 			mysqli_close($conn);
