@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
 	} else {
 		while ($row = mysqli_fetch_array($r)) {
 			$visible = $row['display'];
-			$title = $row['title'];
+			$title = $row['header'];
 
 			if (is_null($title)) {
 				$title = "$_SESSION[username]'s list";

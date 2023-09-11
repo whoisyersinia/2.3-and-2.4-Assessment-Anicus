@@ -13,25 +13,23 @@ $listresult = array();
 $q = "SELECT * FROM `anime_userlist` WHERE (`display` = 1);";
 
 $r = mysqli_query($conn, $q);
-
 while ($row = mysqli_fetch_array($r)) {
 	$listid = $row['idanime_userlist'];
 	$listtitle = $row['header'];
 	$list_userid = $row['iduser'];
 
 	$q = "SELECT * FROM `user` WHERE `iduser` = '$list_userid'";
-	$r = mysqli_query($conn, $q);
+	$result = mysqli_query($conn, $q);
 
-	while ($row = mysqli_fetch_array($r)) {
-		$username = $row['username'];
+	while ($row1 = mysqli_fetch_array($result)) {
+		$username = $row1['username'];
 	}
-
 
 	//link for redirect
 	$windowloc = "window.location.href=";
 	$vurl = "viewlist.php?id=$list_userid";
 	$vonclick = $windowloc . "\"$vurl\"";
-	if (mysqli_num_rows($r) == 1) {
+	if (mysqli_num_rows($r) > 1) {
 		array_push($listresult, " <div class='col d-flex justify-content-start align-self-start'>
 		<div class='card' style='width: 18rem;'>
 			<img src='./images/bg-4.png' class='card-img-top' alt='card-img'>

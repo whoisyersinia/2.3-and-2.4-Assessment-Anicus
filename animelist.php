@@ -126,7 +126,7 @@ if (!isset($_SESSION['login'])) {
 
 
 		//query using joins to get anime and their review that matches the anime id and current user id that are added to the list
-		$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `reviews` ON anime.idanime = reviews.anime_idanime AND anime.iduser = reviews.user_iduser WHERE (anime_list.idanime_userlist = '$listid')  ORDER BY IF (`reviews`.`rating` IS NULL, 1,0), `reviews`.`rating` ASC";
+		$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `anime_userlist` ON anime_list.idanime_userlist = anime_userlist.idanime_userlist LEFT JOIN `reviews` ON anime.idanime = reviews.anime_idanime AND anime_userlist.iduser = reviews.user_iduser WHERE (anime_list.idanime_userlist = '$listid')  ORDER BY IF (`reviews`.`rating` IS NULL, 1,0), `reviews`.`rating` ASC";
 		$r = mysqli_query($conn, $q);
 
 		if (mysqli_num_rows($r) == 0) {
