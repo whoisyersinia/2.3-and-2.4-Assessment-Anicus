@@ -16,6 +16,15 @@ if (!isset($_SESSION['login'])) {
 } else {
 	if (isset($_GET['id'])) {
 
+		$userid = $_SESSION['iduser'];
+
+		$q = "SELECT `idanime_userlist` FROM `anime_userlist` WHERE(`iduser` = '$userid')";
+		$r = mysqli_query($conn, $q);
+		while ($row = mysqli_fetch_assoc($r)) {
+			$listid = $row['idanime_userlist'];
+		}
+
+
 		//if anime exists
 		$id = $_GET['id'];
 
@@ -34,9 +43,9 @@ if (!isset($_SESSION['login'])) {
 			die();
 		}
 
-		$userid = $_SESSION['iduser'];
+
 		if (!empty($_GET['a'] === 'delete')) {
-			$q = "DELETE FROM `anime_list` WHERE (`anime_idanime` = '$id') AND (`user_iduser` = '$userid')";
+			$q = "DELETE FROM `anime_list` WHERE (`anime_idanime` = '$id') AND (`idanime_userlist` = '$listid')";
 			$r = mysqli_query($conn, $q);
 			$url = "animelist.php?id=" . $userid . "&s=delete";
 			header("Location: $url");
@@ -46,7 +55,7 @@ if (!isset($_SESSION['login'])) {
 
 		//if anime already in list
 
-		$q = "SELECT * FROM `anime_list` WHERE (`anime_idanime` = '$id') AND (`user_iduser` = $userid)";
+		$q = "SELECT * FROM `anime_list` WHERE (`anime_idanime` = '$id') AND (`idanime_userlist` = '$listid')";
 		$r =  mysqli_query($conn, $q) or trigger_error("Query: $q\b<br/>MySQL Error: " . mysqli_error($conn));
 
 		if (mysqli_num_rows($r) == 1) {
@@ -55,10 +64,10 @@ if (!isset($_SESSION['login'])) {
 			mysqli_close($conn);
 		} else {
 			// if ok - insert query
-			$q = "INSERT into `anime_list` (`anime_idanime`, `user_iduser`) VALUES ('$id', '$userid')";
+
+			$q = "INSERT into `anime_list` (`anime_idanime`, `idanime_userlist`) VALUES ('$id', '$listid')";
 			$r = mysqli_query($conn, $q);
 
-			$q = "INSERT into `reviews` (`anime_idanime`, `user_iduser`)  VALUES ('$id', '$userid')";
 
 			$url = "animelist.php?id=" . $userid . "&s=add";
 			header("Location: $url");

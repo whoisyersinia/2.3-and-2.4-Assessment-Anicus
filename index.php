@@ -43,6 +43,8 @@ session_start();
 		}
 	}
 
+	//status popup messages 
+
 	if (!empty($_GET['s'])) {
 		echo "<div class='alert alert-danger alert-dismissable d-flex align-items-center fade show fixed-top' role='alert'>";
 		echo "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='currentColor' class='bi bi-exclamation-triangle-fill flex-shrink-0 me-2' viewBox='0 0 16 16' role='img' aria-label='Warning:'>
@@ -202,7 +204,7 @@ session_start();
 					Have an opinion? Share your opinion by adding your review plus a score out of 10 to any anime.
 				</p>
 				<p>Whenever you see this button click it to review.</p>
-				<button type='button' class='btn btn-dark border-black text-white disabled'><i class='fa-solid fa-star pe-2'></i>Review Anime</button>
+				<button type='button' class='btn btn-info border-black text-primary disabled'><i class=' fa-solid fa-star pe-2'></i>Review Anime</button>
 			</div>
 		</div>
 	</div>

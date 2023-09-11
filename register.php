@@ -73,7 +73,6 @@ if ($e && $p && $u) {
 
 			$result = mysqli_query($conn, $query);
 
-
 			// create activation link which sends email
 			if (mysqli_affected_rows($conn) == 1) {
 				$url = 'activation.php?e=' . urlencode($e) . '&a=' . $a . '&u=' . $u;

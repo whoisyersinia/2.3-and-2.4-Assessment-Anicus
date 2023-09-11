@@ -38,10 +38,14 @@ $position-values: (
   100: 100%
 );
 
+
+//import bootstrap and font 
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700;800&display=swap');
 
 @import "../node_modules/bootstrap/scss/bootstrap";
 
+
+//basic css for htm body and scroll bar
 html,
 body {
   min-height: 100vh;
@@ -70,6 +74,8 @@ body::-webkit-scrollbar-thumb {
   box-sizing: border-box;
 }
 
+
+//banner image for index.php
 .banner-image{
   background-image: url("../images/bg-4.png");
   background-size: cover;
@@ -85,6 +91,8 @@ body::-webkit-scrollbar-thumb {
   // border-right: 2px solid hsl(0, 0%, 0%);
 }
 
+
+//text effects
 .text_effect{
   background-image: linear-gradient(90deg, #c9ddff, #ecb0e1);
   background-size: 0% 5px;
@@ -135,6 +143,8 @@ body::-webkit-scrollbar-thumb {
   font-size: small;
 }
 
+
+//card css
 .card_img{
   background-image: url('../images/animeintro.png'); 
   background-size: cover;
@@ -202,6 +212,11 @@ body::-webkit-scrollbar-thumb {
 }
 
 
+.private{
+  font-weight: 500;
+}
+
+//key frames animations
 @keyframes fade-bottom {
   0% {
     transform: translateY(50px);

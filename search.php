@@ -32,13 +32,13 @@ if (isset($_GET['filter'])) {
 	$iduser = $_SESSION['iduser'];
 	if ($filter === "upload") {
 		$iduser = $_SESSION['iduser'];
-		$q = "SELECT COUNT(*) As total_records  FROM `anime` WHERE (`title` LIKE '%$query%') AND (`iduser` = $iduser) ";
+		$q = "SELECT COUNT(*) As total_records FROM `anime` WHERE (`title` LIKE '%$query%') AND (`iduser` = $iduser) ";
 		if (isset($_GET['genre'])) {
 			$genre = implode(', ', $_GET['genre']);
-			$q = "SELECT COUNT(*) As total_records  FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%') AND (`iduser` = $iduser )";
+			$q = "SELECT COUNT(*) As total_records FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%') AND (`iduser` = $iduser )";
 		}
 	} elseif ($filter === "list") {
-		$q = "SELECT COUNT(*) As total_records FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime WHERE  (`title` LIKE '%$query%') AND (anime_list.user_iduser = $iduser)";
+		$q = "SELECT COUNT(*) As total_records FROM `anime_list`	LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `anime_userlist` ON anime_list.idanime_userlist = anime_userlist.idanime_userlist WHERE (anime_userlist.iduser = $iduser) AND  (`title` LIKE '%$query%')";
 	} else {
 		if (isset($_GET['genre'])) {
 			$genre = implode(', ', $_GET['genre']);
@@ -82,7 +82,7 @@ if (isset($_GET['filter'])) {
 			$q = "SELECT * FROM `anime` WHERE (`title` LIKE '%$query%') AND (`genre` LIKE '%$genre%') AND (`iduser` = $iduser) LIMIT $offset, $total_result_per_page";
 		}
 	} elseif ($filter === "list") {
-		$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime WHERE (`title` LIKE '%$query%') AND (anime_list.user_iduser = $iduser) LIMIT $offset, $total_result_per_page";
+		$q = "SELECT anime.date_aired, anime.synopsis, anime.idanime, anime.iduser, anime.title, anime.genre, anime.episodes FROM `anime` LEFT JOIN `anime_list` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `anime_userlist` ON anime_list.idanime_userlist = anime_userlist.idanime_userlist WHERE (anime_userlist.iduser = $iduser) AND (`title` LIKE '%$query%') LIMIT $offset, $total_result_per_page ";
 	} else {
 		if (isset($_GET['genre'])) {
 			$genre = implode(', ', $_GET['genre']);
@@ -150,7 +150,7 @@ while ($row = mysqli_fetch_array($r)) {
 	//push the card to an array 
 	if (isset($_SESSION['login'])) {
 		//check if user already has this anime on their list
-		$q = "SELECT * FROM `anime_list` WHERE (`anime_idanime` = $id) AND (`user_iduser` = $userid)";
+		$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `anime_userlist` ON anime_list.idanime_userlist = anime_userlist.idanime_userlist WHERE (anime_userlist.iduser = $userid) AND (anime.idanime = $id)";
 		$result = mysqli_query($conn, $q);
 
 		if (mysqli_num_rows($result) == 1) {
@@ -163,7 +163,7 @@ while ($row = mysqli_fetch_array($r)) {
 										<div class='card-body mx-1'>
 											<h5 class='card-title text-break fw-bold text-clamp' style='font-size: clamp(1rem, 1.3vw, 1.5rem);'>$row[title]</h5>
 											<h6 class='card-subtitle mb-2 text-wrap text-tertiary text-clamp'>$row[genre]</h6>
-											<h6 class='card-title text-break;'>Episodes: $row[episodes]</h6>
+											<h6 class='card-title text-break;'>$row[episodes] episodes</h6>
 											<h6 class='card-subtitle mb-2 text-wrap text-clamp'>Date aired: $da</h6>
 											<h6 class='card-subtitle text-wrap text-clamp'>$sy</h6>
 											<div class='pt-2 pb-2 gap-1 d-flex justify-content-start align-content-start'>

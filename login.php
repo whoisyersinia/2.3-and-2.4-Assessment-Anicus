@@ -55,6 +55,31 @@ if (isset($_POST['login'])) {
 			//split user variables to its session variable
 			$_SESSION = mysqli_fetch_array($r, MYSQLI_ASSOC);
 			$_SESSION['login'] = true;
+
+			//create list
+			$userid = $_SESSION['iduser'];
+
+			$q = "SELECT * FROM `anime_userlist` WHERE (`iduser` = '$userid')";
+			$result =  mysqli_query($conn, $q) or trigger_error("Query: $q\b<br/>MySQL Error: " . mysqli_error($conn));
+
+			if (mysqli_num_rows($result) == 0) {
+				$q = "INSERT into `anime_userlist` (`display`, `iduser`) VALUES (0, '$userid')";
+				mysqli_query($conn, $q);
+
+				$q = "SELECT * FROM `anime_userlist` WHERE (`iduser` = '$userid')";
+				$r =  mysqli_query($conn, $q) or trigger_error("Query: $q\b<br/>MySQL Error: " . mysqli_error($conn));
+				while ($row = mysqli_fetch_array($r)) {
+					$listid = $row['idanime_userlist'];
+				}
+			} else {
+				while ($row = mysqli_fetch_array($r)) {
+					$listid = $row['idanime_userlist'];
+				}
+			}
+
+			$_SESSION['listid'] = $listid;
+
+
 			mysqli_free_result($r);
 			mysqli_close($conn);
 
@@ -109,12 +134,6 @@ if ($errors) {
 			<div class="form-floating mt-3">
 				<input name="password" type="password" class="form-control border border-3 border-info" id="floatingPassword" placeholder="Password">
 				<label for="floatingPassword">Password</label>
-			</div>
-
-			<div class="checkbox mb-3">
-				<label class="text-light py-2">
-					<input name="remember_me" type="checkbox" value="remember-me"> Remember me
-				</label>
 			</div>
 
 			<div class="checkbox mb-3">

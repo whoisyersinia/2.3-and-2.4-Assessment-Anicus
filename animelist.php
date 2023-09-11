@@ -12,8 +12,18 @@ error_reporting(E_ALL);
 if (!isset($_SESSION['login'])) {
 	header("Location: login.php?s=req");
 } else {
+
+	//check if current user owns the list
 	if (isset($_GET['id'])) {
 		$id = $_GET['id'];
+		$current_userid = $_SESSION['iduser'];
+
+		if ($current_userid !== $id) {
+			http_response_code(403);
+			header("Location: /anicus/errordocs/403.html");
+			die();
+		}
+
 		if (isset($_GET['s'])) {
 			if (!empty($_GET['s'] === 'add')) {
 				echo "<div class='alert alert-success alert-dismissable d-flex align-items-center fade show fixed-top' role='alert'>";
@@ -102,11 +112,25 @@ if (!isset($_SESSION['login'])) {
 		$animeresult = array();
 		$count = 0;
 
-		$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `reviews` ON anime.idanime = reviews.anime_idanime WHERE anime_list.user_iduser = $id;";
+		$q = "SELECT * FROM `anime_userlist` WHERE `iduser` = '$id';";
+		$r = mysqli_query($conn, $q);
+		while ($row = mysqli_fetch_array($r)) {
+			$listid = $row['idanime_userlist'];
+			$listtitle = $row['header'];
+			$visible = $row['display'];
+
+			if (is_null($listtitle)) {
+				$listtitle = "$_SESSION[username]'s list";
+			}
+		}
+
+
+		//query using joins to get anime and their review that matches the anime id and current user id that are added to the list
+		$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `reviews` ON anime.idanime = reviews.anime_idanime AND anime.iduser = reviews.user_iduser WHERE (anime_list.idanime_userlist = '$listid')  ORDER BY IF (`reviews`.`rating` IS NULL, 1,0), `reviews`.`rating` ASC";
 		$r = mysqli_query($conn, $q);
 
 		if (mysqli_num_rows($r) == 0) {
-			$msg = "<h3 class='px-5 fs-3 text-primary'>Sorry, no anime on you list. Start adding by searching above.</h3>";
+			$msg = "<h3 class='px-5 fs-3 text-primary'>Sorry, no anime in your list. Start adding by searching above.</h3>";
 		}
 		while ($row = mysqli_fetch_array($r)) {
 			$res = True;
@@ -116,12 +140,14 @@ if (!isset($_SESSION['login'])) {
 			$userid = $row['iduser'];
 
 			$rating = $row['rating'];
+
 			if (is_null($rating)) {
 				$rating = '?';
 			}
 
 			$count += 1;
 
+			// if they added the anime allow to edit
 			if ($id == $userid) {
 				array_push(
 					$animeresult,
@@ -178,17 +204,27 @@ echo "<title>Your list</title>"
 		</div>
 
 		<div class="row-md-6">
-			<h1 class="text-center fs-1 fw-bold text-black pt-4"><?php echo $_SESSION['username'] ?>'s List</h1>
+			<h1 class="text-center fs-1 fw-bold text-black pt-4"><?php echo $listtitle ?></h1>
 
 		</div>
 
 
 		<div class="row text-center">
 			<?php if (isset($msg)) echo $msg; ?>
+			<?php if (isset($visible)) {
+				if ($visible == 0) {
+					echo "<p class='text-center private-text text-success fs-5'><i class='fa-solid fa-lock pe-2'></i>Your list is currently set to <span class='fw-bold'>private</span>. To change this, click on settings! </p>";
+				} else
+					echo "<p class='text-center text-warning fs-5'><i class='fa-solid fa-lock-open pe-2'></i>Your list is currently set to <span class='fw-bold'>public</span>. To change this, click on settings! </p>";
+			};
+			?>
+
 		</div>
 		<div class="row">
-			<div class="d-flex justify-content-center align-content-center mx-auto">
-				<form class="d-inline-flex pb-4" action="search.php" method="GET">
+
+			<div class="mx-auto">
+				<form class="d-flex justify-content-center align-content-center pb-4" action="search.php" method="GET">
+					<button type='button' class='btn btn-success btn-sm border-black text-white p-2 px-3 me-3 w-100' onclick="window.location.href='settingslist.php?id=<?php echo $id ?>'"><i class="fa-solid fa-gear pe-2"></i>Settings</button>
 					<button type='button' class='btn btn-danger btn-sm border-black text-white p-2 px-3 me-3 w-100' onclick="window.location.href='addanime.php'"><i class='fa-solid fa-plus pe-2'></i>Add anime</button>
 					<button type='button' class='btn btn-info btn-sm border-black text-primary p-2 px-3 me-3 w-100' onclick="window.location.href='anime.php'"><i class="fa-solid fa-eye pe-2"></i>View all anime</button>
 					<input class="form-control me-2" type="search" placeholder="Search anime" aria-label="Search" name="searchterm" required>
@@ -196,6 +232,7 @@ echo "<title>Your list</title>"
 				</form>
 			</div>
 		</div>
+
 		<?php
 		if ($res === True) {
 			echo "<table class='table table-hover table-responsive table-dark border-secondary table-bordered'>
@@ -225,6 +262,7 @@ echo "<title>Your list</title>"
 
 
 	</div>
+
 
 </body>
 <?php

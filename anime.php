@@ -75,7 +75,7 @@ $second_last = $total_no_of_pages - 1;
 
 // pagination query with limit selector in sql query
 
-$q = "SELECT * FROM `anime` LIMIT $offset, $total_result_per_page";
+$q = "SELECT * FROM `anime` ORDER BY `anime`.`idanime` DESC, `anime`.`updated_on` DESC LIMIT $offset, $total_result_per_page";
 
 
 $r = mysqli_query($conn, $q);
@@ -121,9 +121,8 @@ while ($row = mysqli_fetch_array($r)) {
 	//push the card to an array 
 	if (isset($_SESSION['login'])) {
 		//check if user already has this anime on their list
-		$q = "SELECT * FROM `anime_list` WHERE (`anime_idanime` = $id) AND (`user_iduser` = $userid)";
+		$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `anime_userlist` ON anime_list.idanime_userlist = anime_userlist.idanime_userlist WHERE (anime_userlist.iduser = $userid) AND (anime.idanime = $id)";
 		$result = mysqli_query($conn, $q);
-
 		if (mysqli_num_rows($result) == 1) {
 			if ($iduser === $userid) {
 				array_push(
@@ -244,14 +243,56 @@ while ($row = mysqli_fetch_array($r)) {
 ?>
 <title>Anime</title>
 
-<body class="mt-5 pt-5">
-	<div class="d-flex justify-content-center align-content-center mx-auto">
+<body class="mt-5 pt-5 px-0 container-fluid">
 
-		<form class="d-inline-flex pb-4" action="search.php" method="GET">
-			<button type='button' class='btn btn-danger btn-sm border-black text-white p-2 px-3 me-3 w-100' onclick="window.location.href='addanime.php'"><i class='fa-solid fa-plus pe-2'></i>Add anime</button>
-			<input class="form-control me-2" type="search" placeholder="Search anime" aria-label="Search" name="searchterm" required>
-			<button class="btn btn-outline-primary" type="submit" name="search">Search</button>
+	<div class="d-flex justify-content-center align-content-center mx-auto">
+		<form action="search.php" method="GET">
+			<div class=" d-inline-flex gap-2 container-fluid">
+				<i class="fa-solid text-tertiary fa-filter justify-content-center align-self-center fa-xl"></i>
+				<?php if (isset($_SESSION['login'])) {
+					echo "<select name='filter' class='form-select' style='width: 15rem;' id='filter'>
+				<option value='all' selected>All</option>
+				<option value='upload'>Uploaded anime</option>
+				<option value='list'>Anime in your list</option>
+			</select>";
+				} else {
+					"<select name='filter' class='form-select' style='width: 15rem;' id='filter'>
+					<option value='all' selected>All</option>
+				</select>";
+				}
+				?>
+
+
+
+				<input class="d-none" id="gedit" value="<?php echo $genre; ?>">
+				<select name="genre[]" id="floatingInput" class="form-control border border-3 border-info chosen-select" multiple data-placeholder="Filter genres" style="width: 80rem;">
+
+					<option value="Action">Action</option>
+					<option value="Adventure">Adventure</option>
+					<option value="Comedy">Comedy</option>
+					<option value="Drama">Drama</option>
+					<option value="Slice of Life">Slice of Life</option>
+					<option value="Fantasy">Fantasy</option>
+					<option value="Magic">Magic</option>
+					<option value="Supernatural">Supernatural</option>
+					<option value="Horror">Horror</option>
+					<option value="Mystery">Mystery</option>
+					<option value="Psychological">Psychological</option>
+					<option value="Romance">Romance</option>
+					<option value="Sci-Fi">Sci-Fi</option>
+				</select>
+
+
+				<input class="form-control me-2" type="search" placeholder="Search for anime" aria-label="Search" name="searchterm" value="<?php if (isset($_GET['searchterm'])) echo $_GET['searchterm']; ?>">
+				<button class="btn btn-outline-primary " type="submit" name="search">Search</button>
+			</div>
+			<div class="d-inline-flex gap-2 mx-3">
+			</div>
+
 		</form>
+	</div>
+	<div class="d-flex justify-content-center align-content-center pt-3">
+		<button type='button' class='btn btn-danger border-black text-white p-2 px-3 me-3' onclick="window.location.href='addanime.php'"><i class='fa-solid fa-plus pe-2'></i>Add anime</button>
 	</div>
 
 

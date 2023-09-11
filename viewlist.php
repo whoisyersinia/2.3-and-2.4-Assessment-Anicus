@@ -35,7 +35,24 @@ if (isset($_GET['id'])) {
 	$animeresult = array();
 	$count = 0;
 
-	$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `reviews` ON anime.idanime = reviews.anime_idanime LEFT JOIN `user` ON anime_list.user_iduser = user.iduser WHERE anime_list.user_iduser = $id;";
+
+	$q = "SELECT * FROM `anime_userlist` WHERE `iduser` = '$id';";
+	$r = mysqli_query($conn, $q);
+	while ($row = mysqli_fetch_array($r)) {
+		$listid = $row['idanime_userlist'];
+		$listtitle = $row['header'];
+		$visible = $row['display'];
+	}
+
+	$q = "SELECT * FROM `user` WHERE `iduser` = '$id'";
+	$r = mysqli_query($conn, $q);
+
+	while ($row = mysqli_fetch_array($r)) {
+		$username = $row['username'];
+	}
+
+
+	$q = "SELECT * FROM `anime_list` LEFT JOIN `anime` ON anime.idanime = anime_list.anime_idanime LEFT JOIN `reviews` ON anime.idanime = reviews.anime_idanime AND anime.iduser = reviews.user_iduser WHERE (anime_list.idanime_userlist = '$listid')  ORDER BY IF (`reviews`.`rating` IS NULL, 1,0), `reviews`.`rating` ASC";
 	$r = mysqli_query($conn, $q);
 
 	if (mysqli_num_rows($r) == 0) {
@@ -49,7 +66,6 @@ if (isset($_GET['id'])) {
 		$userid = $row['iduser'];
 
 		$rating = $row['rating'];
-		$username = $row['username'];
 
 		if (is_null($rating)) {
 			$rating = '?';
@@ -90,6 +106,7 @@ echo "<title>Viewing $username's List</title>"
 
 		<div class="row-md-6">
 			<h1 class="text-center fs-1 fw-bold text-black pt-4"><?php echo $username ?>'s List</h1>
+			<h4 class="text-center  text-black pb-2">by <?php echo $username ?></h4>
 
 		</div>
 
